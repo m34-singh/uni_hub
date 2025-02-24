@@ -8,6 +8,7 @@ __pycache__/
 # Ignore virtual environments
 venv/
 env/
+*.venv/
 
 # Ignore IDE/editor-specific files
 .vscode/
@@ -16,7 +17,8 @@ env/
 
 # Ignore environment variables and secrets
 .env
-*.env
+.env.*
+*.env  # Ensures all env files except example are ignored
 
 # Ignore Django static/media files (optional, can be rebuilt)
 staticfiles/
@@ -30,3 +32,6 @@ db.sqlite3
 *.pid
 *.log
 docker-compose.override.yml
+
+# Ignore __MACOSX system files (if you're using macOS)
+.DS_Store
