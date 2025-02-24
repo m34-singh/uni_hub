@@ -1,12 +1,143 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Uni Hub</title>
+  <meta charset="UTF-8" />
+  <title>Campus-Style Page with Pastel Palette</title>
+  <style>
+    /* 
+      Pastel colors from my palette image:
+      Pink:   #F8B8AF
+      Yellow: #FFF2A9
+      Green:  #E3FFD9
+      Teal:   #A8E7E2
+    */
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #F8B8AF; /* Pastel Pink as main background */
+    }
+
+    /* Header / Navigation */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #E3FFD9; /* Pastel Green */
+      padding: 1rem 2rem;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #333;
+    }
+
+    nav a {
+      text-decoration: none;
+      color: #333;
+      margin-left: 1rem;
+      font-weight: 500;
+    }
+
+    /* Hero Section */
+    .hero {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 2rem;
+      background-color: #FFF2A9; /* Pastel Yellow for hero */
+    }
+
+    .hero-content {
+      max-width: 50%;
+    }
+
+    .hero-content h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .hero-content p {
+      font-size: 1.1rem;
+      margin-bottom: 1.5rem;
+      line-height: 1.4;
+    }
+
+    .cta-button {
+      background-color: #A8E7E2; /* Pastel Teal */
+      color: #333;
+      padding: 0.75rem 1.5rem;
+      text-decoration: none;
+      font-weight: bold;
+      border-radius: 4px;
+      display: inline-block;
+    }
+
+    /* Hero image placeholder (phone mockups) */
+    .hero-image img {
+      max-width: 100%;
+      height: auto;
+      border: 2px solid #333;
+      border-radius: 8px;
+    }
+
+    /* Chat Bubble (bottom right) */
+    .chat-bubble {
+      position: fixed;
+      right: 1rem;
+      bottom: 1rem;
+      max-width: 300px;
+      background-color: #E3FFD9; /* Pastel Green */
+      padding: 1rem;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      font-size: 0.9rem;
+    }
+
+    .chat-bubble h4 {
+      margin-bottom: 0.5rem;
+    }
+  </style>
 </head>
 <body>
-    <h1>Welcome to Uni Hub</h1>
-    <p>This is the homepage. Test if it worked on another PC</p>
+
+  <!-- Header / Nav -->
+  <header>
+    <div class="logo">UniHub</div>
+    <nav>
+      <a href="#">Resources</a>
+      <a href="#">Sign In</a>
+    </nav>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-content">
+      <h1>The all-in-one campus experience management platform</h1>
+      <p>
+        Connect with people at the university!
+      </p>
+      <a href="#" class="cta-button">Get In Touch</a>
+    </div>
+    <div class="hero-image">
+      <!-- Replace this src with your own phone mockups or screenshots -->
+      <img src="https://via.placeholder.com/300x500?text=Mockup" alt="App Mockups" />
+    </div>
+  </section>
+
+  <!-- Chat Bubble -->
+  <div class="chat-bubble">
+    <h4>Hello and welcome!</h4>
+    <p>
+      Please let me know how I can help you with our all-in-one student platform that helps you stay connected.
+    </p>
+  </div>
+
 </body>
 </html>

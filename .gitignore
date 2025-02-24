@@ -18,11 +18,11 @@ env/
 # Ignore environment variables and secrets
 .env
 .env.*
-*.env  # Ensures all env files except example are ignored
+*.env
 
 # Ignore Django static/media files (optional, can be rebuilt)
-staticfiles/  # Ignore generated static files (run collectstatic instead)
-media/  # Ignore uploaded media files
+staticfiles/
+media/
 
 # Allow tracking of empty folders (add .gitkeep inside ignored folders)
 !media/.gitkeep
