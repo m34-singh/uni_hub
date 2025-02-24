@@ -1,0 +1,32 @@
+# Ignore Python cache and compiled files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.log
+
+# Ignore virtual environments
+venv/
+env/
+
+# Ignore IDE/editor-specific files
+.vscode/
+.idea/
+*.sublime-workspace
+
+# Ignore environment variables and secrets
+.env
+*.env
+
+# Ignore Django static/media files (optional, can be rebuilt)
+staticfiles/
+media/
+
+# Ignore SQLite database files (if using SQLite)
+*.sqlite3
+db.sqlite3
+
+# Ignore Docker-related files
+*.pid
+*.log
+docker-compose.override.yml
