@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>UNI HUB - LOGIN</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      width: 100%;
+      font-family: Arial, sans-serif;
+    }
+
+    video {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: -2;
+    }
+
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: -1;
+    }
+
+    .navbar {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      display: flex;
+      gap: 20px;
+      z-index: 10;
+    }
+
+    .navbar button {
+      background-color: transparent;
+      border: 1px solid #fcff50;
+      color: #fff;
+      padding: 10px 15px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .navbar button:hover {
+      background-color: #fcff50;
+      color: #000;
+    }
+
+    .content {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      color: #fff;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    .login-box {
+      background: rgba(0, 0, 0, 0.6);
+      padding: 60px 80px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .login-box h2 {
+      margin: 0 0 20px;
+      color: #fcff50;
+      font-size: 1.8em;
+      letter-spacing: 1px;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      max-width: 300px;
+    }
+
+    label {
+      margin-bottom: 5px;
+      font-size: 0.9em;
+      text-transform: none;
+      letter-spacing: normal;
+    }
+
+    input[type="text"],
+    input[type="password"] {
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #fcff50;
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+      font-size: 1em;
+    }
+
+    input[type="text"]::placeholder,
+    input[type="password"]::placeholder {
+      color: #ddd;
+    }
+
+    .login-btn {
+      background-color: transparent;
+      border: 1px solid #fcff50;
+      color: #fff;
+      padding: 10px;
+      font-size: 1em;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      margin-top: 10px;
+    }
+
+    .login-btn:hover {
+      background-color: #fcff50;
+      color: #000;
+    }
+
+    .extra-links {
+      margin-top: 10px;
+      text-align: center;
+      font-size: 0.8em;
+    }
+
+    .extra-links a {
+      color: #fcff50;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <video autoplay loop muted playsinline>
+    <source src="../media/homepage-background.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+
+  <div class="overlay"></div>
+
+  <nav class="navbar">
+    <button>About</button>
+    <a href="/">
+        <button>Home</button>
+      </a>
+  </nav>
+
+  <div class="content">
+    <div class="login-box">
+      <h2>Login</h2>
+      <form>
+        <label for="username">Username</label>
+        <input 
+          type="text" 
+          id="username" 
+          name="username" 
+          placeholder="Enter username" 
+          required
+        >
+
+        <label for="password">Password</label>
+        <input 
+          type="password" 
+          id="password" 
+          name="password" 
+          placeholder="Enter password" 
+          required
+        >
+
+        <button class="login-btn" type="submit">Login</button>
+
+        <div class="extra-links">
+          <a href="#">Forgot Password?</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</body>
+</html>

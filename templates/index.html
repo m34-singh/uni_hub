@@ -1,143 +1,90 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Campus-Style Page with Pastel Palette</title>
+  <meta charset="UTF-8">
+  <title>UNI HUB HOMEPAGE</title>
   <style>
-    /* 
-      Pastel colors from my palette image:
-      Pink:   #F8B8AF
-      Yellow: #FFF2A9
-      Green:  #E3FFD9
-      Teal:   #A8E7E2
-    */
-
-    * {
+    html, body {
       margin: 0;
       padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
+      height: 100%;
+      width: 100%;
       font-family: Arial, sans-serif;
-      background-color: #F8B8AF; /* Pastel Pink as main background */
     }
 
-    /* Header / Navigation */
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background-color: #E3FFD9; /* Pastel Green */
-      padding: 1rem 2rem;
-    }
-
-    .logo {
-      font-size: 1.5rem;
-      font-weight: bold;
-      color: #333;
-    }
-
-    nav a {
-      text-decoration: none;
-      color: #333;
-      margin-left: 1rem;
-      font-weight: 500;
-    }
-
-    /* Hero Section */
-    .hero {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 2rem;
-      background-color: #FFF2A9; /* Pastel Yellow for hero */
-    }
-
-    .hero-content {
-      max-width: 50%;
-    }
-
-    .hero-content h1 {
-      font-size: 2.5rem;
-      margin-bottom: 1rem;
-    }
-
-    .hero-content p {
-      font-size: 1.1rem;
-      margin-bottom: 1.5rem;
-      line-height: 1.4;
-    }
-
-    .cta-button {
-      background-color: #A8E7E2; /* Pastel Teal */
-      color: #333;
-      padding: 0.75rem 1.5rem;
-      text-decoration: none;
-      font-weight: bold;
-      border-radius: 4px;
-      display: inline-block;
-    }
-
-    /* Hero image placeholder (phone mockups) */
-    .hero-image img {
-      max-width: 100%;
-      height: auto;
-      border: 2px solid #333;
-      border-radius: 8px;
-    }
-
-    /* Chat Bubble (bottom right) */
-    .chat-bubble {
+    video {
       position: fixed;
-      right: 1rem;
-      bottom: 1rem;
-      max-width: 300px;
-      background-color: #E3FFD9; /* Pastel Green */
-      padding: 1rem;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      font-size: 0.9rem;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: -2;
     }
 
-    .chat-bubble h4 {
-      margin-bottom: 0.5rem;
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: -1;
+    }
+
+    .navbar {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      display: flex;
+      gap: 20px;
+      z-index: 10;
+    }
+
+    .navbar button {
+      background-color: transparent;
+      border: 1px solid #fcff50;
+      color: #fff;
+      padding: 10px 15px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .navbar button:hover {
+      background-color: #fcff50;
+      color: #000;
+    }
+
+    .content {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      color: #fff;
+      font-size: 3em;
+      text-transform: uppercase;
+      letter-spacing: 2px;
     }
   </style>
 </head>
 <body>
+  <video autoplay loop muted playsinline>
+    <source src="../media/homepage-background.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
 
-  <!-- Header / Nav -->
-  <header>
-    <div class="logo">UniHub</div>
-    <nav>
-      <a href="#">Resources</a>
-      <a href="#">Sign In</a>
-    </nav>
-  </header>
+  <div class="overlay"></div>
 
-  <!-- Hero Section -->
-  <section class="hero">
-    <div class="hero-content">
-      <h1>The all-in-one campus experience management platform</h1>
-      <p>
-        Connect with people at the university!
-      </p>
-      <a href="#" class="cta-button">Get In Touch</a>
-    </div>
-    <div class="hero-image">
-      <!-- Replace this src with your own phone mockups or screenshots -->
-      <img src="https://via.placeholder.com/300x500?text=Mockup" alt="App Mockups" />
-    </div>
-  </section>
+  <nav class="navbar">
+    <button>About</button>
+    <a href="login">
+      <button>Login</button>
+    </a>
+  </nav>
 
-  <!-- Chat Bubble -->
-  <div class="chat-bubble">
-    <h4>Hello and welcome!</h4>
-    <p>
-      Please let me know how I can help you with our all-in-one student platform that helps you stay connected.
-    </p>
+  <div class="content">
+    <h1 style="color:#fcff50">UNI HUB</h1>
   </div>
-
 </body>
 </html>
