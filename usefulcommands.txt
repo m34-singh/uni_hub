@@ -1,0 +1,6 @@
+docker-compose down
+docker-compose up --build -d
+
+For when you make changes to your code.
+ 
+============================================
