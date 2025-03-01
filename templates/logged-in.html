@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>UNI HUB HOMEPAGE</title>
+  <title>UNI HUB - LOGGED IN</title>
   <style>
     html, body {
       margin: 0;
@@ -41,6 +41,7 @@
       z-index: 10;
     }
 
+    /* This rule now applies to both the About button and the Sign Out button */
     .navbar button {
       background-color: transparent;
       border: 1px solid #fcff50;
@@ -59,6 +60,7 @@
     .content {
       position: relative;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
       height: 100%;
@@ -66,6 +68,11 @@
       font-size: 3em;
       text-transform: uppercase;
       letter-spacing: 2px;
+    }
+
+    h1 {
+      color: #fcff50;
+      margin: 0 0 20px;
     }
   </style>
 </head>
@@ -79,13 +86,15 @@
 
   <nav class="navbar">
     <button>About</button>
-    <a href="login">
-      <button>Login</button>
-    </a>
+    <form method="POST" action="{% url 'logout' %}" style="margin: 0;">
+      {% csrf_token %}
+      <!-- Removed the logout-btn class so it inherits from .navbar button -->
+      <button type="submit">Sign Out</button>
+    </form>
   </nav>
 
   <div class="content">
-    <h1 style="color:#fcff50">UNI HUB</h1>
+    <h1>LOGGED IN SUCCESSFULLY</h1>
   </div>
 </body>
 </html>

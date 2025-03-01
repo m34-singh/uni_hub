@@ -17,6 +17,8 @@ DEBUG = os.getenv("DJANGO_DEBUG", "False").strip().lower() in ["true", "1", "yes
 
 ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
 
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -25,6 +27,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
+    "core",
     "api",
 ]
 

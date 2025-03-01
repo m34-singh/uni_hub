@@ -47,6 +47,7 @@
       color: #fff;
       padding: 10px 15px;
       cursor: pointer;
+      font-size: 0.8em; /* same size for both buttons */
       transition: background-color 0.3s ease;
     }
 
@@ -136,6 +137,13 @@
       color: #fcff50;
       text-decoration: none;
     }
+
+    .error-message {
+      color: red;
+      margin-top: 10px;
+      font-size: 0.9em;
+      text-align: center;
+    }
   </style>
 </head>
 <body>
@@ -150,13 +158,15 @@
     <button>About</button>
     <a href="/">
         <button>Home</button>
-      </a>
+    </a>
   </nav>
 
   <div class="content">
     <div class="login-box">
       <h2>Login</h2>
-      <form>
+      <form method="POST" action="{% url 'login' %}">
+        {% csrf_token %}
+        
         <label for="username">Username</label>
         <input 
           type="text" 
@@ -180,6 +190,12 @@
         <div class="extra-links">
           <a href="#">Forgot Password?</a>
         </div>
+
+        <!-- Display error message if login fails -->
+        {% if error_message %}
+          <p class="error-message">{{ error_message }}</p>
+        {% endif %}
+        
       </form>
     </div>
   </div>
