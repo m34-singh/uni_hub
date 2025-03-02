@@ -41,14 +41,13 @@
       z-index: 10;
     }
 
-    /* This rule now applies to both the About button and the Sign Out button */
     .navbar button {
       background-color: transparent;
       border: 1px solid #fcff50;
       color: #fff;
       padding: 10px 15px;
       cursor: pointer;
-      font-size: 0.8em; /* same size for both buttons */
+      font-size: 0.8em;
       transition: background-color 0.3s ease;
     }
 
@@ -88,7 +87,6 @@
     <button>About</button>
     <form method="POST" action="{% url 'logout' %}" style="margin: 0;">
       {% csrf_token %}
-      <!-- Removed the logout-btn class so it inherits from .navbar button -->
       <button type="submit">Sign Out</button>
     </form>
   </nav>
