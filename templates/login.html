@@ -133,9 +133,20 @@
       font-size: 0.8em;
     }
 
-    .extra-links a {
+    .extra-links a.forgot-password {
       color: #fcff50;
       text-decoration: none;
+      display: inline-block;
+      margin-bottom: 15px;
+    }
+
+    .extra-links a.register-link {
+      text-decoration: none;
+      color: #fff;
+    }
+
+    .extra-links a.register-link span {
+      color: #fcff50;
     }
 
     .error-message {
@@ -157,7 +168,7 @@
   <nav class="navbar">
     <button>About</button>
     <a href="/">
-        <button>Home</button>
+      <button>Home</button>
     </a>
   </nav>
 
@@ -166,7 +177,7 @@
       <h2>Login</h2>
       <form method="POST" action="{% url 'login' %}">
         {% csrf_token %}
-        
+
         <label for="username">Username</label>
         <input 
           type="text" 
@@ -188,13 +199,18 @@
         <button class="login-btn" type="submit">Login</button>
 
         <div class="extra-links">
-          <a href="#">Forgot Password?</a>
+          <a href="#" class="forgot-password">Forgot Password?</a>
+
+          <br />
+          <a href="{% url 'register' %}" class="register-link">
+            Haven't got an account? <span>Register</span>
+          </a>
         </div>
 
         {% if error_message %}
           <p class="error-message">{{ error_message }}</p>
         {% endif %}
-        
+
       </form>
     </div>
   </div>
