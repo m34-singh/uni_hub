@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>UNI HUB - REGISTER</title>
+  <title>UNI HUB - REGISTER (Multi-Step)</title>
   <style>
     html, body {
       margin: 0;
@@ -69,10 +69,12 @@
 
     .register-box {
       background: rgba(0, 0, 0, 0.6);
-      padding: 60px 80px;
+      padding: 40px 50px;
       display: flex;
       flex-direction: column;
       align-items: center;
+      max-width: 600px;
+      width: 100%;
     }
 
     .register-box h2 {
@@ -80,13 +82,33 @@
       color: #fcff50;
       font-size: 1.8em;
       letter-spacing: 1px;
+      text-transform: uppercase;
     }
 
     form {
+      width: 100%;
       display: flex;
       flex-direction: column;
-      width: 100%;
-      max-width: 300px;
+    }
+
+    .form-step {
+      display: none;
+      flex-direction: column;
+      margin-bottom: 30px;
+      border: 1px solid #fcff50;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 20px;
+    }
+    .form-step.active {
+      display: flex;
+    }
+    .form-step h3 {
+      margin-top: 0;
+      margin-bottom: 15px;
+      color: #fcff50;
+      font-size: 1.2em;
+      letter-spacing: 1px;
+      text-transform: uppercase;
     }
 
     label {
@@ -97,8 +119,10 @@
     }
 
     input[type="text"],
+    input[type="email"],
     input[type="password"],
-    input[type="email"] {
+    input[type="number"],
+    input[type="date"] {
       padding: 10px;
       margin-bottom: 15px;
       border: 1px solid #fcff50;
@@ -107,23 +131,73 @@
       font-size: 1em;
     }
 
-    input[type="text"]::placeholder,
-    input[type="password"]::placeholder,
-    input[type="email"]::placeholder {
+    input::placeholder {
       color: #ddd;
     }
 
+    .invalid {
+      border: 1px solid red !important;
+    }
+
+    .inline-error {
+      color: red;
+      font-size: 0.8em;
+      margin: -5px 0 10px 0; 
+      display: none;
+    }
+
+    .interests-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .interest-option {
+      display: inline-block;
+      border: 1px solid #fcff50;
+      padding: 8px 12px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      margin-bottom: 10px;
+    }
+    .interest-option:hover {
+      background-color: #fcff50;
+      color: #000;
+    }
+    .interest-option.selected {
+      background-color: #fcff50;
+      color: #000;
+    }
+
+    .form-navigation {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 10px;
+    }
+    .nav-btn {
+      background-color: transparent;
+      border: 1px solid #fcff50;
+      color: #fff;
+      padding: 10px 15px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      font-size: 1em;
+      text-transform: uppercase;
+    }
+    .nav-btn:hover {
+      background-color: #fcff50;
+      color: #000;
+    }
     .register-btn {
       background-color: transparent;
       border: 1px solid #fcff50;
       color: #fff;
-      padding: 10px;
+      padding: 10px 15px;
       font-size: 1em;
       cursor: pointer;
       transition: background-color 0.3s ease;
+      text-transform: uppercase;
       margin-top: 10px;
     }
-
     .register-btn:hover {
       background-color: #fcff50;
       color: #000;
@@ -134,7 +208,6 @@
       text-align: center;
       font-size: 0.8em;
     }
-
     .extra-links a {
       color: #fcff50;
       text-decoration: none;
@@ -165,13 +238,14 @@
   <nav class="navbar">
     <button>About</button>
     <a href="/">
-        <button>Home</button>
+      <button>Home</button>
     </a>
   </nav>
 
   <div class="content">
     <div class="register-box">
       <h2>Register</h2>
+
       {% if messages %}
         <div class="messages">
           {% for message in messages %}
@@ -179,43 +253,267 @@
           {% endfor %}
         </div>
       {% endif %}
+
       <form method="POST" action="{% url 'register' %}">
         {% csrf_token %}
-        
-        <label for="username">Username</label>
-        <input 
-          type="text" 
-          id="username" 
-          name="username" 
-          placeholder="Enter username" 
-          required
-        >
 
-        <label for="email">Email</label>
-        <input 
-          type="email" 
-          id="email" 
-          name="email" 
-          placeholder="Enter email"
-        >
+        <div class="form-step active" data-step="1">
+          <h3>Account Details</h3>
 
-        <label for="password">Password</label>
-        <input 
-          type="password" 
-          id="password"
-          name="password" 
-          placeholder="Enter password" 
-          required
-        >
+          <label for="username">Username <span style="color:red;">*</span></label>
+          <input 
+            type="text"
+            id="username"
+            name="username"
+            placeholder="Choose a username"
+            required
+          >
+          <div id="usernameError" class="inline-error"></div>
 
-        <button class="register-btn" type="submit">Sign Up</button>
+          <label for="email">Email <span style="color:red;">*</span></label>
+          <input 
+            type="email"
+            id="email"
+            name="email"
+            placeholder="Enter your email"
+            required
+          >
+          <div id="emailError" class="inline-error"></div>
+
+          <label for="password">Password <span style="color:red;">*</span></label>
+          <input 
+            type="password"
+            id="password"
+            name="password"
+            placeholder="Enter a strong password"
+            required
+          >
+
+          <div class="form-navigation">
+            <span></span>
+            <button type="button" class="nav-btn next-btn" id="step1NextBtn">Next</button>
+          </div>
+        </div>
+
+        <div class="form-step" data-step="2">
+          <h3>Your Profile</h3>
+          <label for="name">First Name <span style="color:red;">*</span></label>
+          <input 
+            type="text"
+            id="name"
+            name="name"
+            placeholder="e.g. John Doe"
+            required
+          >
+
+          <label for="age">Age <span style="color:red;">*</span></label>
+          <input
+            type="number"
+            id="age"
+            name="age"
+            placeholder="e.g. 20"
+            min="0"
+            required
+          >
+
+          <label for="course">Course <span style="color:red;">*</span></label>
+          <input
+            type="text"
+            id="course"
+            name="course"
+            placeholder="e.g. Computer Science"
+            required
+          >
+
+          <label for="start_date">Start Date <span style="color:red;">*</span></label>
+          <input
+            type="date"
+            id="start_date"
+            name="start_date"
+            required
+          >
+
+          <div class="form-navigation">
+            <button type="button" class="nav-btn prev-btn">Previous</button>
+            <button type="button" class="nav-btn next-btn">Next</button>
+          </div>
+        </div>
+
+        <div class="form-step" data-step="3">
+          <h3>Select Interests</h3>
+          <p style="text-transform:none; font-size:0.9em; margin-bottom:10px;">
+            Click on an interest below to add/remove it:
+          </p>
+          <div class="interests-container">
+            <div class="interest-option" data-value="music">Music</div>
+            <div class="interest-option" data-value="sports">Sports</div>
+            <div class="interest-option" data-value="coding">Coding</div>
+            <div class="interest-option" data-value="gaming">Gaming</div>
+            <div class="interest-option" data-value="travel">Travel</div>
+            <div class="interest-option" data-value="art">Art</div>
+            <div class="interest-option" data-value="science">Science</div>
+          </div>
+          <input type="hidden" id="interestsInput" name="interests" value="">
+
+          <div class="form-navigation">
+            <button type="button" class="nav-btn prev-btn">Previous</button>
+            <button type="button" class="nav-btn next-btn">Next</button>
+          </div>
+        </div>
+
+        <div class="form-step" data-step="4">
+          <h3>Review & Submit</h3>
+          <p style="text-transform:none; font-size:0.9em;">
+            Click "Sign Up" to complete your registration.
+          </p>
+
+          <div class="form-navigation">
+            <button type="button" class="nav-btn prev-btn">Previous</button>
+            <button type="submit" class="register-btn">Sign Up</button>
+          </div>
+        </div>
 
         <div class="extra-links">
-          <p>Already have an account? <a href="{% url 'login' %}">Login</a></p>
+          <p>Already have an account?
+            <a href="{% url 'login' %}">Login</a>
+          </p>
         </div>
-        
       </form>
     </div>
   </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const form = document.querySelector("form");
+      const formSteps = document.querySelectorAll(".form-step");
+      const nextBtns = document.querySelectorAll(".next-btn");
+      const prevBtns = document.querySelectorAll(".prev-btn");
+
+      let currentStep = 0;
+
+      function showStep(index) {
+        formSteps.forEach(step => step.classList.remove("active"));
+        formSteps[index].classList.add("active");
+      }
+
+      function validateStep(index) {
+        let valid = true;
+        const step = formSteps[index];
+        const requiredFields = step.querySelectorAll("[required]");
+
+        requiredFields.forEach(field => {
+          field.classList.remove("invalid");
+          if (!field.value.trim()) {
+            field.classList.add("invalid");
+            valid = false;
+          }
+        });
+
+        if (index === 1) {
+          const ageField = document.getElementById("age");
+          if (ageField.value && parseInt(ageField.value) < 0) {
+            ageField.classList.add("invalid");
+            valid = false;
+          }
+        }
+        return valid;
+      }
+
+      showStep(currentStep);
+
+      nextBtns.forEach(btn => {
+        btn.addEventListener("click", function() {
+          if (currentStep === 0) {
+            if (!validateStep(currentStep)) return;
+            checkAvailabilityAndProceed(); 
+          } else {
+            if (validateStep(currentStep)) {
+              if (currentStep < formSteps.length - 1) {
+                currentStep++;
+                showStep(currentStep);
+              }
+            }
+          }
+        });
+      });
+
+      prevBtns.forEach(btn => {
+        btn.addEventListener("click", function() {
+          if (currentStep > 0) {
+            currentStep--;
+            showStep(currentStep);
+          }
+        });
+      });
+
+      function checkAvailabilityAndProceed() {
+        const usernameField = document.getElementById("username");
+        const emailField = document.getElementById("email");
+        const usernameError = document.getElementById("usernameError");
+        const emailError = document.getElementById("emailError");
+
+        usernameError.style.display = "none";
+        emailError.style.display = "none";
+        usernameError.textContent = "";
+        emailError.textContent = "";
+
+        const usernameValue = usernameField.value.trim();
+        const emailValue = emailField.value.trim();
+
+        const url = `/check-availability/?username=${encodeURIComponent(usernameValue)}&email=${encodeURIComponent(emailValue)}`;
+
+        fetch(url)
+          .then(res => res.json())
+          .then(data => {
+            let canProceed = true;
+
+            if (data.username_taken) {
+              usernameError.textContent = "Username is already taken.";
+              usernameError.style.display = "block";
+              canProceed = false;
+            }
+            if (data.email_taken) {
+              emailError.textContent = "Email is already taken.";
+              emailError.style.display = "block";
+              canProceed = false;
+            }
+
+            if (canProceed) {
+              if (currentStep < formSteps.length - 1) {
+                currentStep++;
+                showStep(currentStep);
+              }
+            }
+          })
+          .catch(err => {
+            console.error("Error fetching availability:", err);
+          });
+      }
+
+      const interestOptions = document.querySelectorAll(".interest-option");
+      const interestsInput = document.getElementById("interestsInput");
+      let selectedInterests = [];
+
+      interestOptions.forEach(option => {
+        option.addEventListener("click", function() {
+          const value = this.getAttribute("data-value");
+          if (selectedInterests.includes(value)) {
+            selectedInterests = selectedInterests.filter(item => item !== value);
+            this.classList.remove("selected");
+          } else {
+            selectedInterests.push(value);
+            this.classList.add("selected");
+          }
+          interestsInput.value = selectedInterests.join(",");
+        });
+      });
+
+      form.addEventListener("submit", function(e) {
+        if (!validateStep(currentStep)) {
+          e.preventDefault();
+        }
+      });
+    });
+  </script>
 </body>
 </html>
