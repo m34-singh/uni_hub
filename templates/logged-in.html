@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,89 +11,163 @@
       height: 100%;
       width: 100%;
       font-family: Arial, sans-serif;
-    }
-
-    video {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      z-index: -2;
+      background: url('{% static "images/user-background.png" %}') no-repeat center center fixed;
+      background-size: cover;
     }
 
     .overlay {
       position: fixed;
-      top: 0;
+      top: 0; 
       left: 0;
-      width: 100%;
+      width: 100%; 
       height: 100%;
       background: rgba(0, 0, 0, 0.5);
       z-index: -1;
     }
 
     .navbar {
-      position: absolute;
-      top: 20px;
-      right: 20px;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      padding: 15px 20px;
       display: flex;
-      gap: 20px;
-      z-index: 10;
+      align-items: center;
+      justify-content: flex-end;
+      box-sizing: border-box;
+      z-index: 1000;
     }
 
-    .navbar button {
-      background-color: transparent;
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .nav-right > button {
+      background-color: #fcff50;
       border: 1px solid #fcff50;
-      color: #fff;
+      color: #000;
       padding: 10px 15px;
       cursor: pointer;
       font-size: 0.8em;
-      transition: background-color 0.3s ease;
+      transition: background-color 0.3s ease, color 0.3s ease;
     }
-
-    .navbar button:hover {
+    .nav-right > button:hover {
       background-color: #fcff50;
       color: #000;
     }
 
-    .content {
+    .profile-menu {
       position: relative;
       display: flex;
-      flex-direction: column;
       align-items: center;
-      justify-content: center;
-      height: 100%;
+      gap: 8px;
+      cursor: pointer;
       color: #fff;
-      font-size: 3em;
-      text-transform: uppercase;
-      letter-spacing: 2px;
     }
 
-    h1 {
-      color: #fcff50;
-      margin: 0 0 20px;
+    .profile-pic {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .dropdown-menu {
+      position: absolute;
+      top: 110%;
+      right: 0;
+      background: #fff;
+      color: #333;
+      border-radius: 8px;
+      padding: 10px 0;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+      display: none;
+      min-width: 150px;
+      z-index: 2001;
+    }
+
+    .dropdown-menu.show {
+      display: block;
+    }
+
+    .dropdown-menu button {
+      background: #fff;
+      color: #333;
+      border: none;
+      width: 100%;
+      text-align: left;
+      font-size: 0.9em;
+      padding: 8px 16px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .dropdown-menu button:hover {
+      background: #f0f0f0;
+    }
+
+    .main-content {
+      padding-top: 90px;
+      text-align: center;
+      color: #fff;
     }
   </style>
 </head>
 <body>
-  <video autoplay loop muted playsinline>
-    <source src="../media/homepage-background.mp4" type="video/mp4">
-    Your browser does not support the video tag.
-  </video>
-
   <div class="overlay"></div>
 
   <nav class="navbar">
-    <button>About</button>
-    <form method="POST" action="{% url 'logout' %}" style="margin: 0;">
-      {% csrf_token %}
-      <button type="submit">Sign Out</button>
-    </form>
+    <div class="nav-right">
+      <button>About</button>
+
+      <div class="profile-menu" id="profileMenu">
+        <img 
+          src="{% static 'images/default-profile-picture.jpg' %}"
+          alt="Profile Picture"
+          class="profile-pic"
+        />
+        <span>{{ registered_users.username }}</span> &#x25BC;
+
+        <div class="dropdown-menu" id="dropdownMenu">
+          <button>
+            Settings
+          </button>
+          <form method="POST" action="{% url 'logout' %}" style="margin: 0;">
+            {% csrf_token %}
+            <button type="submit">
+              Logout
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
   </nav>
 
-  <div class="content">
-    <h1>LOGGED IN SUCCESSFULLY</h1>
+  <div class="main-content">
   </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const profileMenu = document.getElementById('profileMenu');
+      const dropdownMenu = document.getElementById('dropdownMenu');
+
+      profileMenu.addEventListener('click', function (e) {
+        if (e.target.tagName.toLowerCase() === 'form' || e.target.closest('form')) {
+          return;
+        }
+        dropdownMenu.classList.toggle('show');
+      });
+
+      document.addEventListener('click', function (event) {
+        if (!profileMenu.contains(event.target)) {
+          dropdownMenu.classList.remove('show');
+        }
+      });
+    });
+  </script>
 </body>
 </html>

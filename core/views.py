@@ -8,8 +8,16 @@ from .models import RegisteredUser
 
 def home(request):
     if 'registered_user_id' in request.session:
-        return render(request, 'logged-in.html')
+        ruser_id = request.session['registered_user_id']
+        try:
+            ruser = RegisteredUser.objects.get(pk=ruser_id, is_active=True)
+        except RegisteredUser.DoesNotExist:
+            request.session.flush()
+            return redirect('login')
+        
+        return render(request, 'logged-in.html', {'registered_users': ruser})
     return render(request, 'index.html')
+
 
 
 def login_view(request):
@@ -43,7 +51,15 @@ def logout_view(request):
 def logged_in(request):
     if 'registered_user_id' not in request.session:
         return redirect('login')
-    return render(request, 'logged-in.html')
+
+    ruser_id = request.session['registered_user_id']
+    try:
+        ruser = RegisteredUser.objects.get(pk=ruser_id, is_active=True)
+    except RegisteredUser.DoesNotExist:
+        request.session.flush()
+        return redirect('login')
+
+    return render(request, 'logged-in.html', {'registered_users': ruser})
 
 
 def register_view(request):
