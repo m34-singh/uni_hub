@@ -21,7 +21,7 @@
       left: 0;
       width: 100%; 
       height: 100%;
-      background: rgba(0, 0, 0, 0.5);
+      background: rgba(0, 0, 0, 0.7);
       z-index: -1;
     }
 
@@ -38,13 +38,11 @@
       box-sizing: border-box;
       z-index: 1000;
     }
-
     .nav-right {
       display: flex;
       align-items: center;
       gap: 20px;
     }
-
     .nav-right > button {
       background-color: #fcff50;
       border: 1px solid #fcff50;
@@ -58,7 +56,6 @@
       background-color: #fcff50;
       color: #000;
     }
-
     .profile-menu {
       position: relative;
       display: flex;
@@ -67,14 +64,12 @@
       cursor: pointer;
       color: #fcff50;
     }
-
     .profile-pic {
       width: 32px;
       height: 32px;
       border-radius: 50%;
       object-fit: cover;
     }
-
     .dropdown-menu {
       position: absolute;
       top: 180%;
@@ -88,11 +83,9 @@
       min-width: 150px;
       z-index: 2001;
     }
-
     .dropdown-menu.show {
       display: block;
     }
-
     .dropdown-menu button {
       background: #fff;
       color: #333;
@@ -115,6 +108,91 @@
       text-align: center;
       color: #fff;
     }
+
+    .hero-section {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 60px 20px;
+    }
+    .hero-title {
+      font-size: 88px;
+      color: #000000;
+      font-weight: bold;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+    .hero-subtitle {
+      font-size: 1em;
+      color: #000000;
+      max-width: 600px;
+      margin: 0 auto 30px auto;
+      line-height: 1.5;
+      opacity: 0.9;
+    }
+    .hero-buttons {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      margin-bottom: 50px;
+    }
+    .hero-buttons button {
+      background-color: #000000;
+      border: 0px solid #fcff50;
+      color: #fff;
+      padding: 10px 15px;
+      cursor: pointer;
+      font-size: 0.8em;
+    }
+
+    .cards-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+      justify-content: center;
+    }
+    .card {
+      background: #fff;
+      color: #333;
+      width: 300px;
+      border-radius: 8px;
+      overflow: hidden;
+      text-align: left;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      display: flex;
+      flex-direction: column;
+    }
+    .card img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+    }
+    .card-content {
+      padding: 20px;
+      flex: 1 0 auto;
+    }
+    .card-content h3 {
+      margin-top: 0;
+      margin-bottom: 10px;
+      font-size: 1.1em;
+    }
+    .card-content p {
+      font-size: 0.9em;
+      margin-bottom: 15px;
+      color: #666;
+      line-height: 1.4;
+    }
+    .card-content button {
+      background-color: #000000;
+      border: 0px solid #fcff50;
+      color: #fff;
+      padding: 10px 15px;
+      cursor: pointer;
+      font-size: 0.8em;
+    }
+
   </style>
 </head>
 <body>
@@ -123,7 +201,6 @@
   <nav class="navbar">
     <div class="nav-right">
       <button>About</button>
-
       <div class="profile-menu" id="profileMenu">
         <img 
           src="{% static 'images/default-profile-picture.jpg' %}"
@@ -133,14 +210,11 @@
         <span>{{ registered_users.username }}</span> &#x25BC;
 
         <div class="dropdown-menu" id="dropdownMenu">
-          <button>
-            Settings
-          </button>
+          <button>My Profile</button>
+          <button>Settings</button>
           <form method="POST" action="{% url 'logout' %}" style="margin: 0;">
             {% csrf_token %}
-            <button type="submit">
-              Logout
-            </button>
+            <button type="submit">Logout</button>
           </form>
         </div>
       </div>
@@ -148,6 +222,37 @@
   </nav>
 
   <div class="main-content">
+    <div class="hero-section">
+      <h1 class="hero-title">Welcome to University</h1>
+      <p class="hero-subtitle">
+        Starting university is an exciting yet overwhelming experience. 
+        Uni Hub is here to make it easier! Designed for students, 
+        by students, Uni Hub is your digital gateway to everything happening on campus.
+      </p>
+      <div class="hero-buttons">
+        <button>Contact Us</button>
+        <button>About</button>
+      </div>
+    </div>
+
+    <div class="cards-container">
+      <div class="card">
+        <img src="{% static 'images/stock-photo-1.png' %}" alt="Card One">
+        <div class="card-content">
+          <h3>Join Communities</h3>
+          <p>Join communities with other like-minded people to connect.</p>
+          <button>View More</button>
+        </div>
+      </div>
+      <div class="card">
+        <img src="{% static 'images/stock-photo-2.jpeg' %}" alt="Card Two">
+        <div class="card-content">
+          <h3>Join Events</h3>
+          <p>Join events to meet and connect with people.</p>
+          <button>View More</button>
+        </div>
+      </div>
+    </div>
   </div>
 
   <script>
