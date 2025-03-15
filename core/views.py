@@ -142,3 +142,57 @@ def check_availability(request):
         'username_taken': username_taken,
         'email_taken': email_taken
     })
+
+
+def my_profile(request):
+    if 'registered_user_id' in request.session:
+        ruser_id = request.session['registered_user_id']
+        try:
+            ruser = RegisteredUser.objects.get(pk=ruser_id, is_active=True)
+        except RegisteredUser.DoesNotExist:
+            request.session.flush()
+            return redirect('login')
+        
+        return render(request, 'my-profile.html', {'registered_users': ruser})
+    return render(request, 'index.html')
+
+
+def update_profile(request):
+    if request.method == 'POST':
+        if 'registered_user_id' not in request.session:
+            return redirect('login') 
+
+        ruser_id = request.session['registered_user_id']
+        try:
+            user = RegisteredUser.objects.get(pk=ruser_id, is_active=True)
+        except RegisteredUser.DoesNotExist:
+            request.session.flush()
+            return redirect('login')
+
+        new_username = request.POST.get('username', '')
+        new_name = request.POST.get('name', '')
+        new_email = request.POST.get('email', '')
+        new_password = request.POST.get('password', '')
+        new_course = request.POST.get('course', '')
+        new_date = request.POST.get('course_date', '')
+        new_interests = request.POST.get('interests', '')
+
+        if new_username.strip():
+            user.username = new_username
+        if new_name.strip():
+            user.name = new_name
+        if new_email.strip():
+            user.email = new_email
+        if new_password.strip():
+            user.set_password(new_password)
+        if new_course.strip():
+            user.course = new_course
+        if new_date.strip():
+            user.start_date = new_date
+        if new_interests.strip():
+            user.interests = new_interests
+
+        user.save()
+        return redirect('my-profile')
+
+    return redirect('my-profile')
