@@ -3,4 +3,11 @@ docker-compose up --build -d
 
 For when you make changes to your code.
  
-============================================
+===========================================================================
+
+docker compose exec web python manage.py makemigrations
+docker compose exec web python manage.py migrate
+
+Run these commands after making changes to the core/models.py contents
+
+===========================================================================

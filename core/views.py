@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from datetime import datetime
 
-from .models import RegisteredUser
+from .models import RegisteredUser, Community, CommunityMembership, Thread
 
 def home(request):
     if 'registered_user_id' in request.session:
@@ -144,7 +144,7 @@ def check_availability(request):
     })
 
 
-def my_profile(request):
+def profile_settings(request):
     if 'registered_user_id' in request.session:
         ruser_id = request.session['registered_user_id']
         try:
@@ -153,7 +153,7 @@ def my_profile(request):
             request.session.flush()
             return redirect('login')
         
-        return render(request, 'my-profile.html', {'registered_users': ruser})
+        return render(request, 'profile-settings.html', {'registered_users': ruser})
     return render(request, 'index.html')
 
 
@@ -169,30 +169,298 @@ def update_profile(request):
             request.session.flush()
             return redirect('login')
 
-        new_username = request.POST.get('username', '')
-        new_name = request.POST.get('name', '')
-        new_email = request.POST.get('email', '')
-        new_password = request.POST.get('password', '')
-        new_course = request.POST.get('course', '')
-        new_date = request.POST.get('course_date', '')
-        new_interests = request.POST.get('interests', '')
+        new_username = request.POST.get('username', '').strip()
+        new_name = request.POST.get('name', '').strip()
+        new_email = request.POST.get('email', '').strip()
+        new_password = request.POST.get('password', '').strip()
+        new_course = request.POST.get('course', '').strip()
+        new_date = request.POST.get('course_date', '').strip()
+        new_interests = request.POST.get('interests', '').strip()
 
-        if new_username.strip():
-            user.username = new_username
-        if new_name.strip():
+        # Check if user is actually changing the username and it is taken by another user
+        if new_username and new_username != user.username:
+            if RegisteredUser.objects.filter(username=new_username).exclude(pk=user.pk).exists():
+                messages.error(request, "That username is already taken.")
+                return redirect('profile-settings')
+            else:
+                user.username = new_username
+
+        # Check if user is actually changing the email and it is taken by another user
+        if new_email and new_email != user.email:
+            if RegisteredUser.objects.filter(email=new_email).exclude(pk=user.pk).exists():
+                messages.error(request, "That email is already taken.")
+                return redirect('profile-settings')
+            else:
+                user.email = new_email
+
+        # Update other fields
+        if new_name:
             user.name = new_name
-        if new_email.strip():
-            user.email = new_email
-        if new_password.strip():
+        if new_password:
             user.set_password(new_password)
-        if new_course.strip():
+        if new_course:
             user.course = new_course
-        if new_date.strip():
+        if new_date:
             user.start_date = new_date
-        if new_interests.strip():
+        if new_interests:
             user.interests = new_interests
 
         user.save()
-        return redirect('my-profile')
+        messages.success(request, "Profile updated successfully.")
+        return redirect('profile-settings')
 
-    return redirect('my-profile')
+    # If not POST, just go back to profile-settings (or wherever you prefer)
+    return redirect('profile-settings')
+
+
+def my_profile(request):
+    if 'registered_user_id' in request.session:
+        ruser_id = request.session['registered_user_id']
+        try:
+            ruser = RegisteredUser.objects.get(pk=ruser_id, is_active=True)
+        except RegisteredUser.DoesNotExist:
+            request.session.flush()
+            return redirect('login')
+        
+        return render(request, 'my-profile.html', {'registered_users': ruser})
+    return render(request, 'index.html')
+
+
+def communities(request):
+    if 'registered_user_id' in request.session:
+        ruser_id = request.session['registered_user_id']
+        try:
+            ruser = RegisteredUser.objects.get(pk=ruser_id, is_active=True)
+        except RegisteredUser.DoesNotExist:
+            request.session.flush()
+            return redirect('login')
+
+        all_communities = Community.objects.all().order_by('-date_created')
+        
+        # memberships: get all community IDs where user has membership
+        user_memberships = CommunityMembership.objects.filter(user=ruser)
+        membership_community_ids = set(m.community_id for m in user_memberships)
+
+        return render(request, 'communities.html', {
+            'registered_users': ruser,
+            'communities_list': all_communities,
+            'user_membership_ids': membership_community_ids,  # pass as set
+        })
+    return render(request, 'index.html')
+
+
+def create_community(request):
+    if request.method == 'POST':
+        if 'registered_user_id' not in request.session:
+            return redirect('login')
+        
+        ruser_id = request.session['registered_user_id']
+        try:
+            ruser = RegisteredUser.objects.get(pk=ruser_id, is_active=True)
+        except RegisteredUser.DoesNotExist:
+            request.session.flush()
+            return redirect('login')
+
+        # Check if user has a privileged role
+        if ruser.role not in ['admin', 'community_leader', 'events_leader']:
+            messages.error(request, "You do not have permission to create a community.")
+            return redirect('communities')
+
+        title = request.POST.get('title', '').strip()
+        description = request.POST.get('description', '').strip()
+        tags = request.POST.get('tags', '').strip()
+
+        # Simple check
+        if not title:
+            messages.error(request, "Title is required.")
+            return redirect('communities')
+
+        # Create & save new community
+        new_community = Community.objects.create(
+            title=title,
+            description=description,
+            tags=tags
+        )
+        messages.success(request, f"Community '{new_community.title}' created successfully!")
+        return redirect('communities')
+
+    return redirect('communities')
+
+
+def join_community(request, community_id):
+    if 'registered_user_id' not in request.session:
+        return redirect('login')
+
+    ruser_id = request.session['registered_user_id']
+    try:
+        ruser = RegisteredUser.objects.get(pk=ruser_id, is_active=True)
+    except RegisteredUser.DoesNotExist:
+        request.session.flush()
+        return redirect('login')
+
+    try:
+        com = Community.objects.get(pk=community_id)
+    except Community.DoesNotExist:
+        messages.error(request, "Community not found.")
+        return redirect('communities')
+
+    membership, created = CommunityMembership.objects.get_or_create(
+        user=ruser, community=com
+    )
+    if created:
+        # newly created membership
+        messages.success(request, f"You have joined the '{com.title}' community!")
+    else:
+        # user already in membership
+        messages.info(request, "You have already joined this community!")
+
+    return redirect('communities')
+
+
+def community_detail(request, community_id):
+    if 'registered_user_id' not in request.session:
+        return redirect('login')
+    try:
+        community = Community.objects.get(pk=community_id)
+    except Community.DoesNotExist:
+        messages.error(request, "Community not found.")
+        return redirect('communities')
+
+    # We'll fetch all threads for this community
+    threads = Thread.objects.filter(community=community).order_by('-date_created')
+
+    # Optionally check if user is a member or show a "Join" button, etc.
+    ruser_id = request.session['registered_user_id']
+    ruser = RegisteredUser.objects.get(pk=ruser_id)
+    membership_qs = CommunityMembership.objects.filter(user=ruser, community=community)
+    is_member = membership_qs.exists()
+
+    return render(request, 'community-detail.html', {
+        'community': community,
+        'threads': threads,
+        'is_member': is_member,
+        'registered_users': ruser,
+    })
+
+
+def leave_community(request, community_id):
+    if 'registered_user_id' not in request.session:
+        return redirect('login')
+
+    ruser_id = request.session['registered_user_id']
+    try:
+        ruser = RegisteredUser.objects.get(pk=ruser_id, is_active=True)
+    except RegisteredUser.DoesNotExist:
+        request.session.flush()
+        return redirect('login')
+
+    try:
+        com = Community.objects.get(pk=community_id)
+    except Community.DoesNotExist:
+        messages.error(request, "Community not found.")
+        return redirect('communities')
+
+    # Check if membership exists
+    membership_qs = CommunityMembership.objects.filter(user=ruser, community=com)
+    if membership_qs.exists():
+        membership_qs.delete()
+        messages.success(request, f"You have left the '{com.title}' community.")
+    else:
+        messages.error(request, "You are not a member of this community.")
+    
+    return redirect('communities')
+
+
+def create_thread(request, community_id):
+    if 'registered_user_id' not in request.session:
+        return redirect('login')
+
+    ruser_id = request.session['registered_user_id']
+    try:
+        ruser = RegisteredUser.objects.get(pk=ruser_id, is_active=True)
+    except RegisteredUser.DoesNotExist:
+        request.session.flush()
+        return redirect('login')
+
+    try:
+        community = Community.objects.get(pk=community_id)
+    except Community.DoesNotExist:
+        messages.error(request, "Community not found.")
+        return redirect('communities')
+
+    # Check membership if you want to restrict thread creation to members:
+    membership = CommunityMembership.objects.filter(user=ruser, community=community).first()
+    if not membership:
+        messages.error(request, "You must join this community to create a thread.")
+        return redirect('community_detail', community_id=community_id)
+
+    if request.method == 'POST':
+        thread_title = request.POST.get('thread_title', '').strip()
+        thread_content = request.POST.get('thread_content', '').strip()
+
+        if not thread_title:
+            messages.error(request, "Thread title is required.")
+            return redirect('community_detail', community_id=community_id)
+
+        # Create the new thread
+        new_thread = Thread.objects.create(
+            community=community,
+            title=thread_title,
+            content=thread_content,
+            created_by=ruser
+        )
+        messages.success(request, f"Thread '{new_thread.title}' created successfully!")
+        return redirect('community_detail', community_id=community_id)
+
+    # If somehow GET (not typical), just go back to detail
+    return redirect('community_detail', community_id=community_id)
+
+
+def create_comment(request, community_id, thread_id):
+    # 1) Make sure user is logged in
+    if 'registered_user_id' not in request.session:
+        return redirect('login')
+
+    ruser_id = request.session['registered_user_id']
+    try:
+        ruser = RegisteredUser.objects.get(pk=ruser_id, is_active=True)
+    except RegisteredUser.DoesNotExist:
+        request.session.flush()
+        return redirect('login')
+
+    # 2) Check that community and thread exist
+    try:
+        community = Community.objects.get(pk=community_id)
+    except Community.DoesNotExist:
+        messages.error(request, "Community not found.")
+        return redirect('communities')
+
+    try:
+        thread = Thread.objects.get(pk=thread_id, community=community)
+    except Thread.DoesNotExist:
+        messages.error(request, "Thread not found in this community.")
+        return redirect('community_detail', community_id=community_id)
+
+    # 3) Check if user is a member (if you want to restrict comment creation to members only)
+    membership = CommunityMembership.objects.filter(user=ruser, community=community).first()
+    if not membership:
+        messages.error(request, "You must join this community to comment.")
+        return redirect('community_detail', community_id=community_id)
+
+    # 4) If POST, create new comment
+    if request.method == 'POST':
+        comment_content = request.POST.get('comment_content', '').strip()
+        if not comment_content:
+            messages.error(request, "Comment cannot be empty.")
+            return redirect('community_detail', community_id=community_id)
+
+        from .models import Comment
+        new_comment = Comment.objects.create(
+            thread=thread,
+            content=comment_content,
+            created_by=ruser
+        )
+        messages.success(request, "Comment posted!")
+        return redirect('community_detail', community_id=community_id)
+
+    return redirect('community_detail', community_id=community_id)

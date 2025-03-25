@@ -1,0 +1,420 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <title>{{ community.title }} - Threads</title>
+  <style>
+    /* GLOBAL BOX-SIZING */
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
+    /* RESET & BASE */
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      min-height: 100vh;
+      overflow-x: hidden;
+      font-family: Arial, sans-serif;
+      background: url('{% static "images/dark-blue-background.png" %}') no-repeat center center fixed;
+      background-size: cover;
+      color: #fff;
+    }
+
+    .overlay {
+      position: fixed;
+      top: 0; 
+      left: 0;
+      width: 100%; 
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: -1;
+    }
+
+    /* NAVBAR */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: #000;
+      padding: 15px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-sizing: border-box;
+      z-index: 1000;
+    }
+    .nav-left,
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    .nav-right > button {
+      background-color: #fcff50;
+      border: 1px solid #fcff50;
+      color: #000;
+      padding: 10px 15px;
+      cursor: pointer;
+      font-size: 0.8em;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+    .nav-right > button:hover {
+      background-color: #fcff50;
+      color: #000;
+    }
+
+    /* PROFILE MENU */
+    .profile-menu {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      color: #fcff50;
+    }
+    .profile-pic {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+    .dropdown-menu {
+      position: absolute;
+      top: 180%;
+      right: 0;
+      background: #fff;
+      color: #333;
+      border-radius: 8px;
+      padding: 10px 0;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+      display: none;
+      min-width: 150px;
+      z-index: 2001;
+    }
+    .dropdown-menu.show {
+      display: block;
+    }
+    .dropdown-menu button {
+      background: #fff;
+      color: #333;
+      border: none;
+      width: 100%;
+      text-align: left;
+      font-size: 0.9em;
+      padding: 8px 16px;
+      cursor: pointer;
+      display: block;
+    }
+    .dropdown-menu button:hover {
+      background: #f0f0f0;
+    }
+
+    /* MESSAGES WRAPPER */
+    .messages-container {
+      max-width: 800px; 
+      margin: 20px auto; 
+      text-align: center;
+    }
+    .messages-container p {
+      margin: 5px 0;
+    }
+
+    /* MAIN WRAPPER */
+    .main-content {
+      padding-top: 80px; 
+      min-height: 100vh;
+      max-width: 100%;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+      text-align: center;
+    }
+
+    /* HERO SECTION */
+    .hero-section {
+      margin: 0 auto;
+      padding: 40px 20px;
+      max-width: 800px;
+    }
+    .hero-title {
+      font-size: 2.5em;
+      color: #fcff50;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+    .hero-subtitle {
+      font-size: 1em;
+      color: #ffffff;
+      max-width: 600px;
+      margin: 0 auto 30px;
+      line-height: 1.5;
+    }
+
+    /* THREADS WRAPPER + CREATE THREAD FORM */
+    .threads-section {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      text-align: left;
+    }
+    .create-thread-form {
+      background: rgba(255,255,255,0.1);
+      padding: 15px;
+      border-radius: 6px;
+      margin-bottom: 20px;
+    }
+    .create-thread-form label {
+      display: block;
+      margin-top: 10px;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+    .create-thread-form input[type="text"],
+    .create-thread-form textarea {
+      width: 100%;
+      margin-bottom: 10px;
+      padding: 8px;
+      font-size: 0.9em;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      color: #333;
+    }
+    .create-thread-btn {
+      background: #fcff50;
+      color: #000;
+      border: none;
+      padding: 8px 16px;
+      cursor: pointer;
+      font-size: 0.85em;
+    }
+
+    .threads-list {
+      margin-top: 20px;
+    }
+    .thread-item {
+      background: rgba(255,255,255,0.1);
+      padding: 15px;
+      border-radius: 6px;
+      margin-bottom: 10px;
+    }
+    .thread-item h4 {
+      margin: 0 0 5px;
+      color: #fcff50;
+      font-size: 1em;
+    }
+    .thread-item p {
+      margin: 0 0 5px;
+      font-size: 0.9em;
+      color: #ccc;
+    }
+    .thread-item small {
+      font-size: 0.75em;
+      color: #999;
+    }
+
+    /* COMMENTS SECTION */
+    .comment-item {
+      background: rgba(255,255,255,0.05);
+      padding: 10px;
+      margin-top: 5px;
+      border-radius: 4px;
+    }
+    .comment-item p {
+      margin: 0;
+      font-size: 0.9em;
+      color: #ccc;
+    }
+    .comment-item small {
+      color: #aaa;
+      font-size: 0.8em;
+    }
+    .add-comment-form {
+      margin-top: 10px;
+    }
+    .add-comment-form textarea {
+      width: 100%;
+      margin-bottom: 5px;
+      padding: 8px;
+      font-size: 0.9em;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      color: #333;
+    }
+    .comment-btn {
+      background: #fcff50;
+      color: #000;
+      border: none;
+      padding: 6px 12px;
+      font-size: 0.8em;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="overlay"></div>
+
+  <!-- NAVBAR (same as communities.html) -->
+  <nav class="navbar">
+    <div class="nav-left">
+      <!-- If you want brand or search, put here -->
+    </div>
+    <div class="nav-right">
+      <button>About</button>
+      <div class="profile-menu" id="profileMenu">
+        <img 
+          src="{% static 'images/default-profile-picture.jpg' %}"
+          alt="Profile Picture"
+          class="profile-pic"
+        />
+        <span>{{ registered_users.username }}</span> &#x25BC;
+        <div class="dropdown-menu" id="dropdownMenu">
+          <!-- My Profile -->
+          <form method="POST" action="{% url 'my_profile' %}" style="margin: 0;">
+            {% csrf_token %}
+            <button type="submit">My Profile</button>
+          </form>
+          <!-- Profile Settings -->
+          <form method="POST" action="{% url 'profile-settings' %}" style="margin: 0;">
+            {% csrf_token %}
+            <button type="submit">Profile Settings</button>
+          </form>
+          <!-- Logout -->
+          <form method="POST" action="{% url 'logout' %}" style="margin: 0;">
+            {% csrf_token %}
+            <button type="submit">Logout</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- MESSAGES SECTION -->
+  {% if messages %}
+    <div class="messages-container">
+      {% for message in messages %}
+        <p>{{ message }}</p>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <!-- MAIN CONTENT -->
+  <div class="main-content">
+    <!-- HERO: Show the community's name, short subtext -->
+    <section class="hero-section">
+      <h1 class="hero-title">{{ community.title }} Community</h1>
+      {% if community.description %}
+        <p class="hero-subtitle">{{ community.description }}</p>
+      {% endif %}
+    </section>
+
+    <!-- THREADS SECTION -->
+    <section class="threads-section">
+      <!-- If user is a member, let them create a thread -->
+      {% if is_member %}
+        <div class="create-thread-form">
+          <form method="POST" action="{% url 'create_thread' community.id %}">
+            {% csrf_token %}
+            <label>Thread Title</label>
+            <input type="text" name="thread_title" required />
+
+            <label>Content</label>
+            <textarea name="thread_content" rows="3"></textarea>
+
+            <button type="submit" class="create-thread-btn">Create Thread</button>
+          </form>
+        </div>
+      {% else %}
+        <p style="text-align:center;">You must join this community to create threads.</p>
+      {% endif %}
+
+      <!-- THREADS LIST -->
+      <div class="threads-list">
+        <h3>Threads</h3>
+        {% if threads %}
+          {% for t in threads %}
+            <div class="thread-item">
+              <h4>{{ t.title }}</h4>
+              <p>{{ t.content }}</p>
+              <small>
+                Created by:
+                {% if t.created_by %}
+                  {{ t.created_by.username }}
+                {% else %}
+                  Unknown
+                {% endif %}
+                on {{ t.date_created|date:"Y-m-d H:i" }}
+              </small>
+
+              <!-- COMMENTS -->
+              {% if t.comments.all %}
+                <div style="margin-top:10px;">
+                  <strong>Comments:</strong>
+                  {% for c in t.comments.all %}
+                    <div class="comment-item">
+                      <p>{{ c.content }}</p>
+                      <small>
+                        By:
+                        {% if c.created_by %}
+                          {{ c.created_by.username }}
+                        {% else %}
+                          Unknown
+                        {% endif %}
+                        on {{ c.date_created|date:"Y-m-d H:i" }}
+                      </small>
+                    </div>
+                  {% empty %}
+                    <p>No comments yet. Be the first to reply!</p>
+                  {% endfor %}
+                </div>
+              {% endif %}
+
+              <!-- "Add Comment" form, only if user is a member -->
+              {% if is_member %}
+                <form method="POST"
+                      action="{% url 'create_comment' community.id t.id %}"
+                      class="add-comment-form">
+                  {% csrf_token %}
+                  <textarea name="comment_content" rows="2" placeholder="Write a comment..."></textarea>
+                  <button type="submit" class="comment-btn">Comment</button>
+                </form>
+              {% else %}
+                <p style="font-size:0.85em; color:#bbb;">
+                  Join this community to comment on threads.
+                </p>
+              {% endif %}
+            </div>
+          {% endfor %}
+        {% else %}
+          <p>No threads yet. Be the first to create one!</p>
+        {% endif %}
+      </div>
+    </section>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Profile dropdown
+      const profileMenu = document.getElementById('profileMenu');
+      const dropdownMenu = document.getElementById('dropdownMenu');
+      profileMenu.addEventListener('click', function(e) {
+        // If the target is a <form>, do not toggle
+        if (e.target.tagName.toLowerCase() === 'form' || e.target.closest('form')) {
+          return;
+        }
+        dropdownMenu.classList.toggle('show');
+        e.stopPropagation();
+      });
+
+      document.addEventListener('click', function(e) {
+        if (!profileMenu.contains(e.target)) {
+          dropdownMenu.classList.remove('show');
+        }
+      });
+    });
+  </script>
+</body>
+</html>

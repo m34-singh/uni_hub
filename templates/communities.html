@@ -1,0 +1,480 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Communities</title>
+  <style>
+    /* GLOBAL BOX-SIZING */
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
+    /* RESET & BASE */
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      min-height: 100vh;
+      overflow-x: hidden; 
+      font-family: Arial, sans-serif;
+      background: url('{% static "images/dark-blue-background.png" %}') 
+                  no-repeat center center fixed;
+      background-size: cover;
+      color: #fff;
+    }
+    .overlay {
+      position: fixed;
+      top: 0; 
+      left: 0;
+      width: 100%; 
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: -1;
+    }
+
+    /* NAVBAR */
+    .navbar {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      background: #000;
+      padding: 15px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 1000;
+    }
+    .nav-left,
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    .nav-right > button {
+      background-color: #fcff50;
+      border: 1px solid #fcff50;
+      color: #000;
+      padding: 10px 15px;
+      cursor: pointer;
+      font-size: 0.8em;
+      transition: background-color 0.3s, color 0.3s;
+    }
+    .nav-right > button:hover {
+      background-color: #fcff50;
+      color: #000;
+    }
+
+    /* PROFILE MENU */
+    .profile-menu {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      color: #fcff50;
+    }
+    .profile-pic {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+    .dropdown-menu {
+      position: absolute;
+      top: 180%;
+      right: 0;
+      background: #fff;
+      color: #333;
+      border-radius: 8px;
+      padding: 10px 0;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+      display: none;
+      min-width: 150px;
+      z-index: 2001;
+    }
+    .dropdown-menu.show {
+      display: block;
+    }
+    .dropdown-menu button {
+      background: #fff;
+      color: #333;
+      border: none;
+      width: 100%;
+      text-align: left;
+      font-size: 0.9em;
+      padding: 8px 16px;
+      cursor: pointer;
+      display: block;
+    }
+    .dropdown-menu button:hover {
+      background: #f0f0f0;
+    }
+
+    /* MESSAGES WRAPPER */
+    .messages-container {
+      max-width: 800px; 
+      margin: 20px auto; 
+      text-align: center;
+    }
+    .messages-container p {
+      margin: 5px 0;
+    }
+
+    /* MAIN WRAPPER */
+    .main-content {
+      padding-top: 80px; 
+      text-align: center;
+      min-height: 100vh;
+      max-width: 100%;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* PAGE HEADING */
+    .hero-section {
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+    .hero-title {
+      font-size: 2.5em;
+      color: #fcff50;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+    .hero-subtitle {
+      font-size: 1em;
+      color: #ffffff;
+      max-width: 600px;
+      margin: 0 auto 30px;
+      line-height: 1.5;
+    }
+
+    /* TABS & CREATE POST BUTTON */
+    .communities-tabs {
+      max-width: 800px;
+      margin: 20px auto 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 20px;
+      border-top: 1px solid rgba(255,255,255,0.2);
+      border-bottom: 1px solid rgba(255,255,255,0.2);
+    }
+    .tabs-left {
+      display: flex;
+      gap: 30px;
+    }
+    .tabs-left a {
+      text-decoration: none;
+      color: #999;
+      font-size: 0.9em;
+      position: relative;
+      padding-bottom: 2px;
+    }
+    .tabs-left a.active {
+      color: #fff;
+      font-weight: bold;
+    }
+    .tabs-left a.active::after {
+      content: "";
+      position: absolute;
+      left: 0; bottom: -3px;
+      width: 100%;
+      height: 2px;
+      background: #fcff50;
+    }
+    .create-post-btn {
+      background: #fcff50;
+      color: #000000;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 0;
+      cursor: pointer;
+      font-size: 0.80em;
+      transition: background 0.3s ease;
+    }
+
+    /* NO POSTS YET */
+    .no-posts {
+      max-width: 800px;
+      margin: 40px auto;
+      font-size: 1em;
+      color: #ccc;
+    }
+
+    /* COMMUNITIES LIST */
+    .communities-list {
+      max-width: 800px;
+      margin: 40px auto;
+      text-align: left;
+    }
+    .community-item {
+      background: rgba(255,255,255,0.1);
+      padding: 15px;
+      border-radius: 6px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .community-info {
+      display: flex;
+      flex-direction: column;
+    }
+    .community-info h3 {
+      margin: 0 0 5px;
+      font-size: 1em;
+      color: #fcff50;
+    }
+    .community-info p {
+      margin: 0;
+      font-size: 0.85em;
+      color: #ccc;
+    }
+    /* Link to detail page */
+    .community-info h3 a {
+      text-decoration: none;
+      color: #fcff50;
+    }
+    .community-info h3 a:hover {
+      text-decoration: underline;
+    }
+    .join-btn {
+      background: #fcff50;
+      color: #000;
+      border: none;
+      padding: 6px 12px;
+      font-size: 0.8em;
+      cursor: pointer;
+    }
+
+    /* CREATE COMMUNITY MODAL */
+    .modal {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.6);
+      display: none; /* hidden by default */
+      align-items: center;
+      justify-content: center;
+      z-index: 3000;
+    }
+    .modal-content {
+      background: #fff;
+      color: #333;
+      width: 400px;
+      max-width: 90%;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+    .modal-content h2 {
+      margin-top: 0;
+    }
+    .modal-content label {
+      display: block;
+      font-weight: bold;
+      margin-top: 10px;
+      margin-bottom: 5px;
+      font-size: 0.9em;
+    }
+    .modal-content input[type="text"],
+    .modal-content textarea {
+      width: 100%;
+      margin-bottom: 10px;
+      padding: 8px;
+      font-size: 0.9em;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    .modal-content .btn-row {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 15px;
+    }
+    .modal-content button {
+      background: #fcff50;
+      color: #000000;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.85em;
+    }
+    .modal-content .cancel-btn {
+      background: #ccc;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <div class="overlay"></div>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="nav-left">
+      <!-- brand or search if needed -->
+    </div>
+    <div class="nav-right">
+      <button>About</button>
+      <div class="profile-menu" id="profileMenu">
+        <img 
+          src="{% static 'images/default-profile-picture.jpg' %}"
+          alt="Profile Picture"
+          class="profile-pic"
+        />
+        <span>{{ registered_users.username }}</span> &#x25BC;
+        <div class="dropdown-menu" id="dropdownMenu">
+          <!-- My Profile -->
+          <form method="POST" action="{% url 'my_profile' %}" style="margin: 0;">
+            {% csrf_token %}
+            <button type="submit">My Profile</button>
+          </form>
+          <!-- Profile Settings -->
+          <form method="POST" action="{% url 'profile-settings' %}" style="margin: 0;">
+            {% csrf_token %}
+            <button type="submit">Profile Settings</button>
+          </form>
+          <!-- Logout -->
+          <form method="POST" action="{% url 'logout' %}" style="margin: 0;">
+            {% csrf_token %}
+            <button type="submit">Logout</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- MESSAGES SECTION -->
+  {% if messages %}
+    <div class="messages-container">
+      {% for message in messages %}
+        <p>{{ message }}</p>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <div class="main-content">
+    <!-- PAGE TITLE -->
+    <section class="hero-section">
+      <h1 class="hero-title">COMMUNITIES</h1>
+      <p class="hero-subtitle">Discover and join student-led communities tailored to your interests!</p>
+    </section>
+
+    <!-- TABS & CREATE POST BUTTON -->
+    <div class="communities-tabs">
+      <!-- Left side: Tabs (Popular, Newest, Following) -->
+      <div class="tabs-left">
+        <a href="#" class="active">Popular</a>
+        <a href="#">Newest</a>
+        <a href="#">Following</a>
+      </div>
+      <!-- Right side: "Create Post" if user has a privileged role -->
+      <div class="tabs-right">
+        {% if registered_users.role in "admin community_leader events_leader" %}
+          <button class="create-post-btn" id="openModalBtn">Create Post</button>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- SHOW COMMUNITIES OR "NO POSTS YET" -->
+    {% if communities_list and communities_list|length > 0 %}
+      <div class="communities-list">
+        {% for com in communities_list %}
+          <div class="community-item">
+            <div class="community-info">
+              <!-- Link to community_detail -->
+              <h3>
+                <a href="{% url 'community_detail' com.id %}">
+                  {{ com.title }}
+                </a>
+              </h3>
+              <p>{{ com.description }}</p>
+              <p><em>{{ com.tags }}</em></p>
+            </div>
+
+            <!-- If user is already a member, show "Leave". Otherwise, show "Join". -->
+            {% if com.id in user_membership_ids %}
+              <!-- Leave form -->
+              <form method="POST" action="{% url 'leave_community' com.id %}">
+                {% csrf_token %}
+                <button type="submit" class="join-btn">Leave</button>
+              </form>
+            {% else %}
+              <!-- Join form -->
+              <form method="POST" action="{% url 'join_community' com.id %}">
+                {% csrf_token %}
+                <button type="submit" class="join-btn">Join</button>
+              </form>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="no-posts">
+        <p>There are no posts yet. Be the first to create one!</p>
+      </div>
+    {% endif %}
+  </div>
+
+  <!-- CREATE COMMUNITY MODAL -->
+  <div id="createCommunityModal" class="modal">
+    <div class="modal-content">
+      <h2>Create a New Community</h2>
+      <form id="createCommunityForm" method="POST" action="{% url 'create_community' %}">
+        {% csrf_token %}
+        <label for="title">Community Title</label>
+        <input type="text" id="title" name="title" required>
+
+        <label for="description">Description</label>
+        <textarea id="description" name="description" rows="3"></textarea>
+
+        <label for="tags">Tags (comma-separated)</label>
+        <input type="text" id="tags" name="tags">
+
+        <div class="btn-row">
+          <button type="button" class="cancel-btn" onclick="closeModal()">Cancel</button>
+          <button type="submit">Create</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Profile dropdown
+      const profileMenu = document.getElementById('profileMenu');
+      const dropdownMenu = document.getElementById('dropdownMenu');
+      profileMenu.addEventListener('click', function(e) {
+        if (e.target.tagName.toLowerCase() === 'form' || e.target.closest('form')) {
+          return;
+        }
+        dropdownMenu.classList.toggle('show');
+        e.stopPropagation();
+      });
+      document.addEventListener('click', function(e) {
+        if (!profileMenu.contains(e.target)) {
+          dropdownMenu.classList.remove('show');
+        }
+      });
+
+      // Modal open/close
+      const openModalBtn = document.getElementById('openModalBtn');
+      const createCommunityModal = document.getElementById('createCommunityModal');
+
+      if (openModalBtn) {
+        openModalBtn.addEventListener('click', function() {
+          createCommunityModal.style.display = 'flex';
+        });
+      }
+    });
+
+    function closeModal() {
+      document.getElementById('createCommunityModal').style.display = 'none';
+    }
+  </script>
+</body>
+</html>

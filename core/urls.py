@@ -6,8 +6,10 @@ from .views import (
     logged_in,
     logout_view,
     register_view,
+    profile_settings,
+    update_profile,
     my_profile,
-    update_profile
+    communities
 )
 from . import views
 
@@ -22,6 +24,15 @@ urlpatterns = [
     path("register/", register_view, name="register"),
     path("check-availability/", views.check_availability, name="check_availability"),
 
-    path("my-profile/", my_profile, name="my-profile"),
+    path("profile-settings/", profile_settings, name="profile-settings"),
     path("update-profile/", update_profile, name="update_profile"),
+    path("my-profile/", my_profile, name="my_profile"),
+
+    path("communities/", communities, name="communities"),
+    path('communities/create/', views.create_community, name='create_community'),
+    path('communities/<int:community_id>/join/', views.join_community, name='join_community'),
+    path('communities/<int:community_id>/', views.community_detail, name='community_detail'),
+    path('communities/<int:community_id>/create-thread/', views.create_thread, name='create_thread'),
+    path('communities/<int:community_id>/leave/', views.leave_community, name='leave_community'),
+    path('communities/<int:community_id>/threads/<int:thread_id>/create-comment/', views.create_comment, name='create_comment'),
 ]
