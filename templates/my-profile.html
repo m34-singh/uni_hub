@@ -103,6 +103,61 @@
       background: #f0f0f0;
     }
 
+    .nav-center {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      margin: 0 auto;
+    }
+    .filter-dropdowns {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .filter-dropdown {
+      position: relative;
+    }
+    .dropdown-btn {
+      border-radius: 20px;
+      background-color: transparent;
+      border: 1px solid #fcff50;
+      color: #fff;
+      padding: 8px 12px;
+      cursor: pointer;
+      font-size: 0.8em;
+    }
+    .dropdown-content {
+      position: absolute;
+      top: 110%;
+      left: 0;
+      background: #fff;
+      color: #333;
+      border-radius: 8px;
+      padding: 10px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+      display: none;
+      min-width: 120px;
+      z-index: 2001;
+    }
+    .dropdown-content.show {
+      display: block;
+    }
+    .dropdown-content button,
+    .dropdown-content label {
+      display: block;
+      background: none;
+      border: none;
+      cursor: pointer;
+      text-align: left;
+      margin: 5px 0;
+      font-size: 0.9em;
+      color: #333;
+    }
+    .dropdown-content button:hover,
+    .dropdown-content label:hover {
+      background: #f0f0f0;
+    }
+
     /* ========== LEFT SIDEBAR ========== */
     .sidebar {
       position: fixed;
@@ -141,7 +196,7 @@
     /* ========== MAIN CONTENT ========== */
     .main-content {
       margin-left: 220px;
-      padding-top: 80px;  /* to account for fixed navbar height */
+      padding-top: 80px;
       padding: 20px;
       box-sizing: border-box;
       min-height: 100vh;
@@ -232,9 +287,8 @@
       padding: 15px 20px;
       color: #fff;
     }
-    /* Smaller text for "Studying..." and "Interests are..." */
     .profile-intro p {
-      font-size: 0.8em; /* make these lines smaller */
+      font-size: 0.8em;
       margin: 5px 0;
     }
 
@@ -294,9 +348,9 @@
 
     <div class="menu-title">Recently Joined Events</div>
     <ul>
-      <li>Event Alpha</li>
-      <li>Event Beta</li>
-      <li>Event Gamma</li>
+      <li>Event One</li>
+      <li>Event Two</li>
+      <li>Event Three</li>
     </ul>
   </aside>
 
@@ -316,9 +370,9 @@
     <!-- Horizontal line below the cover/profile -->
     <div class="banner-separator"></div>
 
-    <!-- BODY: INTRO + TIMELINE -->
+    <!-- INTRO + TIMELINE -->
     <div class="profile-body">
-      <!-- LEFT COLUMN: Introduction -->
+      <!-- Introduction -->
       <div>
         <div class="profile-intro">
           <h2 class="section-title">Introduction</h2>
@@ -327,11 +381,10 @@
         </div>
       </div>
 
-      <!-- RIGHT COLUMN: Timeline feed -->
+      <!-- Timeline feed -->
       <div>
         <div class="timeline-feed">
           <h2 class="section-title">Timeline</h2>
-          <!-- Dynamically display "User has joined [community]" or "User signed up for [event]" items here -->
         </div>
       </div>
     </div>

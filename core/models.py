@@ -74,3 +74,26 @@ class Comment(models.Model):
 
     def __str__(self):
         return f"Comment by {self.created_by.username if self.created_by else 'Unknown'}"
+    
+
+class Event(models.Model):
+    title = models.CharField(max_length=255)
+    description = models.TextField(blank=True, null=True)
+    tags = models.CharField(max_length=255, blank=True, null=True)
+    date_created = models.DateTimeField(auto_now_add=True)
+    event_date = models.DateField(blank=True, null=True)
+    start_time = models.TimeField(blank=True, null=True)
+    location = models.CharField(max_length=255, blank=True, null=True)
+    capacity = models.PositiveIntegerField(blank=True, null=True)
+
+    def __str__(self):
+        return self.title
+    
+
+class EventRegistration(models.Model):
+    user = models.ForeignKey(RegisteredUser, on_delete=models.CASCADE)
+    event = models.ForeignKey(Event, on_delete=models.CASCADE)
+    date_joined = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.username} => {self.event.title}"

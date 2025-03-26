@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Communities</title>
+  <title>Events</title>
   <style>
     /* GLOBAL BOX-SIZING */
     *, *::before, *::after {
@@ -18,7 +18,8 @@
       min-height: 100vh;
       overflow-x: hidden; 
       font-family: Arial, sans-serif;
-      background: url('{% static "images/dark-blue-background.png" %}') no-repeat center center fixed;
+      background: url('{% static "images/dark-blue-background.png" %}') 
+                  no-repeat center center fixed;
       background-size: cover;
       color: #fff;
     }
@@ -35,7 +36,8 @@
     /* NAVBAR */
     .navbar {
       position: fixed;
-      top: 0; left: 0;
+      top: 0; 
+      left: 0;
       width: 100%;
       background: #000;
       padding: 15px 20px;
@@ -44,7 +46,7 @@
       box-sizing: border-box;
       z-index: 1000;
     }
-    /* NAV-CENTER: filter dropdowns + search bar */
+    /* NAV-CENTER: Filter dropdowns + Search bar */
     .nav-center {
       display: flex;
       align-items: center;
@@ -66,7 +68,7 @@
       color: #fff;
       padding: 8px 12px;
       cursor: pointer;
-      font-size: 0.8em;
+      font-size: 0.80em;
     }
     .dropdown-content {
       position: absolute;
@@ -105,7 +107,7 @@
       background: #000;
       border: 1px solid #fcff50;
       border-radius: 9999px;
-      padding: 5px 14px;
+      padding: 5px 12px;
     }
     .search-icon {
       margin-right: 8px;
@@ -225,7 +227,7 @@
       line-height: 1.5;
     }
 
-    /* TABS & CREATE POST BUTTON */
+    /* TABS & CREATE EVENT BUTTON */
     .communities-tabs {
       max-width: 800px;
       margin: 20px auto 0 auto;
@@ -270,7 +272,7 @@
       transition: background 0.3s ease;
     }
 
-    /* NO POSTS YET */
+    /* NO EVENTS YET */
     .no-posts {
       max-width: 800px;
       margin: 40px auto;
@@ -278,13 +280,13 @@
       color: #ccc;
     }
 
-    /* COMMUNITIES LIST */
-    .communities-list {
+    /* EVENTS LIST */
+    .events-list {
       max-width: 800px;
       margin: 40px auto;
       text-align: left;
     }
-    .community-item {
+    .event-item {
       background: rgba(255,255,255,0.1);
       padding: 15px;
       border-radius: 6px;
@@ -292,43 +294,40 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+      gap: 20px;
     }
-    .community-info {
+    .event-info {
+      flex: 1;
       display: flex;
       flex-direction: column;
     }
-    .community-info h3 {
+    .event-info h3 {
       margin: 0 0 5px;
       font-size: 1em;
       color: #fcff50;
     }
-    .community-info p {
+    .event-info p {
       margin: 0;
       font-size: 0.85em;
       color: #ccc;
     }
-    /* Link to detail page */
-    .community-info h3 a {
-      text-decoration: none;
-      color: #fcff50;
+    .event-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
-    .community-info h3 a:hover {
-      text-decoration: underline;
-    }
-    .join-btn {
-      background: #fcff50;
-      color: #000;
-      border: none;
+    .event-actions .create-post-btn {
+      font-size: 0.75em;
       padding: 6px 12px;
-      font-size: 0.8em;
-      cursor: pointer;
     }
 
-    /* CREATE COMMUNITY MODAL */
+    /* MODAL */
     .modal {
       position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
+      top: 0; 
+      left: 0;
+      width: 100%;
+      height: 100%;
       background: rgba(0,0,0,0.6);
       display: none;
       align-items: center;
@@ -363,15 +362,11 @@
       border: 1px solid #ccc;
       border-radius: 4px;
     }
-    .modal-content .btn-row {
-      display: flex;
-      justify-content: flex-end;
-      gap: 10px;
-      margin-top: 15px;
-    }
+
+    /* STYLING FOR MODAL BUTTONS */
     .modal-content button {
       background: #fcff50;
-      color: #000000;
+      color: #000;
       border: none;
       padding: 8px 16px;
       border-radius: 4px;
@@ -381,6 +376,13 @@
     .modal-content .cancel-btn {
       background: #ccc;
       color: #333;
+    }
+
+    .btn-row {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 15px;
     }
   </style>
 </head>
@@ -455,7 +457,7 @@
     <div class="nav-right">
       <button>About</button>
       <div class="profile-menu" id="profileMenu">
-        <img
+        <img 
           src="{% static 'images/default-profile-picture.jpg' %}"
           alt="Profile Picture"
           class="profile-pic"
@@ -498,11 +500,11 @@
   <div class="main-content">
     <!-- PAGE TITLE -->
     <section class="hero-section">
-      <h1 class="hero-title">COMMUNITIES</h1>
-      <p class="hero-subtitle">Discover and join student-led communities tailored to your interests!</p>
+      <h1 class="hero-title">EVENTS</h1>
+      <p class="hero-subtitle">Find upcoming events, workshops, and meetups!</p>
     </section>
 
-    <!-- TABS & CREATE POST BUTTON -->
+    <!-- TABS & CREATE EVENT BUTTON -->
     <div class="communities-tabs">
       <!-- Left side: Tabs (Popular, Newest, Following) -->
       <div class="tabs-left">
@@ -510,61 +512,78 @@
         <a href="#">Newest</a>
         <a href="#">Following</a>
       </div>
-      <!-- Right side: "Create Post" if user has a privileged role -->
+      <!-- Right side: "Create Event" if user has 'admin' or 'events_leader' role -->
       <div class="tabs-right">
-        {% if registered_users.role in "admin community_leader events_leader" %}
-          <button class="create-post-btn" id="openModalBtn">Create Post</button>
+        {% if registered_users.role == 'admin' or registered_users.role == 'events_leader' %}
+          <!-- type="button" to avoid any accidental form submission -->
+          <button type="button" class="create-post-btn" id="openModalBtn">Create Event</button>
         {% endif %}
       </div>
     </div>
 
-    <!-- SHOW COMMUNITIES OR "NO POSTS YET" -->
-    {% if communities_list and communities_list|length > 0 %}
-      <div class="communities-list">
-        {% for com in communities_list %}
-          <div class="community-item">
-            <div class="community-info">
-              <!-- Link to community_detail -->
-              <h3>
-                <a href="{% url 'community_detail' com.id %}">
-                  {{ com.title }}
-                </a>
-              </h3>
-              <p>{{ com.description }}</p>
-              <p><em>{{ com.tags }}</em></p>
+    <!-- SHOW EVENTS OR "NO EVENTS YET" -->
+    {% if events_list and events_list|length > 0 %}
+      <div class="events-list">
+        {% for ev in events_list %}
+          <div class="event-item">
+            <div class="event-info">
+              <h3>{{ ev.title }}</h3>
+              <p>{{ ev.description }}</p>
+              <p><em>{{ ev.tags }}</em></p>
+
+              <!-- Additional info: date, time, location, capacity -->
+              {% if ev.event_date %}
+                <p>Date: {{ ev.event_date }}{% if ev.start_time %} at {{ ev.start_time }}{% endif %}</p>
+              {% endif %}
+              {% if ev.location %}
+                <p>Location: {{ ev.location }}</p>
+              {% endif %}
+              <p>
+                Capacity:
+                {% if ev.capacity %}
+                  {{ ev.capacity }}
+                {% else %}
+                  Unlimited
+                {% endif %}
+              </p>
             </div>
 
-            <!-- If user is already a member, show "Leave". Otherwise, show "Join". -->
-            {% if com.id in user_membership_ids %}
-              <!-- Leave form -->
-              <form method="POST" action="{% url 'leave_community' com.id %}">
-                {% csrf_token %}
-                <button type="submit" class="join-btn">Leave</button>
-              </form>
-            {% else %}
-              <!-- Join form -->
-              <form method="POST" action="{% url 'join_community' com.id %}">
-                {% csrf_token %}
-                <button type="submit" class="join-btn">Join</button>
-              </form>
-            {% endif %}
+            <div class="event-actions">
+              {% if ev.capacity and ev.eventregistration_set.count >= ev.capacity %}
+                <p>Event is full</p>
+              {% else %}
+                {% if ev.id in user_event_ids %}
+                  <!-- Already joined => show "Leave" button -->
+                  <form method="POST" action="{% url 'leave_event' ev.id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="create-post-btn">Leave</button>
+                  </form>
+                {% else %}
+                  <!-- Show "Join" button -->
+                  <form method="POST" action="{% url 'join_event' ev.id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="create-post-btn">Join</button>
+                  </form>
+                {% endif %}
+              {% endif %}
+            </div>
           </div>
         {% endfor %}
       </div>
     {% else %}
       <div class="no-posts">
-        <p>There are no posts yet. Be the first to create one!</p>
+        <p>There are no events yet. Be the first to create one!</p>
       </div>
     {% endif %}
   </div>
 
-  <!-- CREATE COMMUNITY MODAL -->
-  <div id="createCommunityModal" class="modal">
+  <!-- CREATE EVENT MODAL -->
+  <div id="createEventModal" class="modal">
     <div class="modal-content">
-      <h2>Create a New Community</h2>
-      <form id="createCommunityForm" method="POST" action="{% url 'create_community' %}">
+      <h2>Create a New Event</h2>
+      <form id="createEventForm" method="POST" action="{% url 'create_event' %}">
         {% csrf_token %}
-        <label for="title">Community Title</label>
+        <label for="title">Event Title</label>
         <input type="text" id="title" name="title" required>
 
         <label for="description">Description</label>
@@ -572,6 +591,18 @@
 
         <label for="tags">Tags (comma-separated)</label>
         <input type="text" id="tags" name="tags">
+
+        <label for="event_date">Event Date</label>
+        <input type="text" id="event_date" name="event_date" placeholder="YYYY-MM-DD" />
+
+        <label for="start_time">Start Time</label>
+        <input type="text" id="start_time" name="start_time" placeholder="HH:MM:SS" />
+
+        <label for="location">Location</label>
+        <input type="text" id="location" name="location" />
+
+        <label for="capacity">Capacity</label>
+        <input type="text" id="capacity" name="capacity" />
 
         <div class="btn-row">
           <button type="button" class="cancel-btn" onclick="closeModal()">Cancel</button>
@@ -582,12 +613,10 @@
   </div>
 
   <script>
-    // Toggles a dropdown content by adding/removing the "show" class
     function toggleDropdown(dropdownContent) {
       dropdownContent.classList.toggle('show');
     }
 
-    // Close any open dropdown that's not the one clicked
     function closeAllDropdowns(except) {
       const allDropdowns = document.querySelectorAll('.dropdown-content.show');
       allDropdowns.forEach((dd) => {
@@ -597,31 +626,36 @@
       });
     }
 
+    function closeModal() {
+      document.getElementById('createEventModal').style.display = 'none';
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
-      // Profile menu
+      // Profile dropdown
       const profileMenu = document.getElementById('profileMenu');
       const dropdownMenu = document.getElementById('dropdownMenu');
       profileMenu.addEventListener('click', function(e) {
         if (e.target.tagName.toLowerCase() === 'form' || e.target.closest('form')) {
           return;
         }
-        closeAllDropdowns(dropdownMenu);
         dropdownMenu.classList.toggle('show');
         e.stopPropagation();
       });
+      document.addEventListener('click', function(e) {
+        if (!profileMenu.contains(e.target)) {
+          dropdownMenu.classList.remove('show');
+        }
+      });
 
-      // Type dropdown references
+      // Type dropdown
       const typeBtn = document.getElementById('typeBtn');
       const typeDropdown = document.getElementById('typeDropdown');
       const typeDropdownContent = document.getElementById('typeDropdownContent');
-
-      // Toggle "Type" dropdown
       typeBtn.addEventListener('click', function(e) {
         closeAllDropdowns(typeDropdownContent);
         toggleDropdown(typeDropdownContent);
         e.stopPropagation();
       });
-      // When user clicks inside the "Type" dropdown, change the button text
       typeDropdownContent.addEventListener('click', function(e) {
         if (e.target.tagName.toLowerCase() === 'button') {
           typeBtn.textContent = e.target.textContent;
@@ -637,32 +671,22 @@
         e.stopPropagation();
       });
 
-      // Close if clicking outside
+      // Close if clicking outside any dropdown
       document.addEventListener('click', function(e) {
-        if (!profileMenu.contains(e.target)) {
-          dropdownMenu.classList.remove('show');
-        }
-        if (!typeDropdown.contains(e.target)) {
-          typeDropdownContent.classList.remove('show');
-        }
-        if (!interestsDropdown.contains(e.target)) {
-          interestsDropdownContent.classList.remove('show');
-        }
+        if (!profileMenu.contains(e.target)) dropdownMenu.classList.remove('show');
+        if (!typeDropdown.contains(e.target)) typeDropdownContent.classList.remove('show');
+        if (!interestsDropdown.contains(e.target)) interestsDropdownContent.classList.remove('show');
       });
 
-      // Create community modal
+      // Modal open/close
       const openModalBtn = document.getElementById('openModalBtn');
-      const createCommunityModal = document.getElementById('createCommunityModal');
+      const createEventModal = document.getElementById('createEventModal');
       if (openModalBtn) {
         openModalBtn.addEventListener('click', function() {
-          createCommunityModal.style.display = 'flex';
+          createEventModal.style.display = 'flex';
         });
       }
     });
-
-    function closeModal() {
-      document.getElementById('createCommunityModal').style.display = 'none';
-    }
   </script>
 </body>
 </html>

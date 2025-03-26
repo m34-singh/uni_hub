@@ -10,12 +10,10 @@
       padding: 0;
       font-family: Arial, sans-serif;
       overflow-x: hidden;
-      background: url('{% static "images/dark-blue-background.png" %}') 
-                  no-repeat center center fixed;
+      background: url('{% static "images/dark-blue-background.png" %}') no-repeat center center fixed;
       background-size: cover;
       color: #fff;
     }
-
     .overlay {
       position: fixed;
       top: 0; 
@@ -25,7 +23,7 @@
       background: rgba(0, 0, 0, 0.7);
       z-index: -1;
     }
-
+    /* NAVBAR */
     .navbar {
       position: fixed;
       top: 0;
@@ -35,16 +33,91 @@
       padding: 15px 20px;
       display: flex;
       align-items: center;
-      justify-content: flex-end;
       box-sizing: border-box;
       z-index: 1000;
     }
+    /* NAV-CENTER: filter dropdowns + search */
+    .nav-center {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      margin: 0 auto;
+    }
+    .filter-dropdowns {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .filter-dropdown {
+      position: relative;
+    }
+    .dropdown-btn {
+      border-radius: 20px;
+      background-color: transparent;
+      border: 1px solid #fcff50;
+      color: #fff;
+      padding: 8px 12px;
+      cursor: pointer;
+      font-size: 0.8em;
+    }
+    .dropdown-content {
+      position: absolute;
+      top: 110%;
+      left: 0;
+      background: #fff;
+      color: #333;
+      border-radius: 8px;
+      padding: 10px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+      display: none;
+      min-width: 120px;
+      z-index: 2001;
+    }
+    .dropdown-content.show {
+      display: block;
+    }
+    .dropdown-content button,
+    .dropdown-content label {
+      display: block;
+      background: none;
+      border: none;
+      cursor: pointer;
+      text-align: left;
+      margin: 5px 0;
+      font-size: 0.9em;
+      color: #333;
+    }
+    .dropdown-content button:hover,
+    .dropdown-content label:hover {
+      background: #f0f0f0;
+    }
+    .search-container {
+      display: flex;
+      align-items: center;
+      background: #000;
+      border: 1px solid #fcff50;
+      border-radius: 9999px;
+      padding: 5px 12px;
+    }
+    .search-icon {
+      margin-right: 8px;
+      width: 16px;
+      height: 16px;
+    }
+    .search-input {
+      border: none;
+      outline: none;
+      background: transparent;
+      color: #fcff50;
+      font-size: 0.8em;
+      width: 180px;
+    }
+    /* NAV-RIGHT (profile menu) */
     .nav-right {
       display: flex;
       align-items: center;
       gap: 20px;
     }
-
     .nav-right > button {
       background-color: #fcff50;
       border: 1px solid #fcff50;
@@ -83,7 +156,7 @@
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
       display: none;
       min-width: 150px;
-      z-index: 2001;
+      z-index: 2002;
     }
     .dropdown-menu.show {
       display: block;
@@ -104,16 +177,15 @@
     .dropdown-menu button:hover {
       background: #f0f0f0;
     }
-
+    /* MAIN CONTENT */
     .main-content {
+      position: relative;
       padding-top: 90px;
       text-align: center;
-      position: relative;
-      z-index: 1;
-      min-height: 100vh; 
+      color: #fff;
+      min-height: 100vh;
       box-sizing: border-box;
     }
-
     .profile-section {
       max-width: 800px;
       margin: 0 auto;
@@ -129,7 +201,6 @@
       text-transform: uppercase;
       letter-spacing: 1px;
     }
-
     .profile-card {
       background: #fff;
       color: #333;
@@ -146,7 +217,6 @@
       margin-bottom: 20px;
       color: #333;
     }
-
     .profile-form label {
       display: block;
       margin-bottom: 5px;
@@ -167,7 +237,6 @@
     .profile-form input[type="date"] {
       color: #333;
     }
-
     .profile-form button {
       background-color: #000;
       border: none;
@@ -180,8 +249,12 @@
     .profile-form button:hover {
       background-color: #333;
     }
-
-    /* Example styling for messages */
+    .action-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+    }
     .messages-container {
       width: 100%;
       max-width: 600px;
@@ -209,29 +282,77 @@
   <div class="overlay"></div>
 
   <nav class="navbar">
+    <!-- NAV-CENTER -->
+    <div class="nav-center">
+      <div class="filter-dropdowns">
+        <div class="filter-dropdown" id="typeDropdown">
+          <button class="dropdown-btn" id="typeBtn">All</button>
+          <div class="dropdown-content" id="typeDropdownContent">
+            <button>All</button>
+            <button>Events</button>
+            <button>Communities</button>
+          </div>
+        </div>
+        <div class="filter-dropdown" id="interestsDropdown">
+          <button class="dropdown-btn">Interests</button>
+          <div class="dropdown-content" id="interestsDropdownContent">
+            <label><input type="checkbox"> Music</label>
+            <label><input type="checkbox"> Sports</label>
+            <label><input type="checkbox"> Coding</label>
+            <label><input type="checkbox"> Gaming</label>
+            <label><input type="checkbox"> Travel</label>
+            <label><input type="checkbox"> Art</label>
+            <label><input type="checkbox"> Science</label>
+            <label><input type="checkbox"> Fitness</label>
+            <label><input type="checkbox"> Books</label>
+            <label><input type="checkbox"> Technology</label>
+            <label><input type="checkbox"> Cooking</label>
+            <label><input type="checkbox"> Fashion</label>
+            <label><input type="checkbox"> Photography</label>
+            <label><input type="checkbox"> Animals</label>
+            <label><input type="checkbox"> Writing</label>
+            <label><input type="checkbox"> Crafts</label>
+            <label><input type="checkbox"> Business</label>
+            <label><input type="checkbox"> Education</label>
+            <label><input type="checkbox"> Mindfulness</label>
+            <label><input type="checkbox"> Politics</label>
+            <label><input type="checkbox"> Finance</label>
+            <label><input type="checkbox"> Cars</label>
+            <label><input type="checkbox"> Design</label>
+            <label><input type="checkbox"> Comedy</label>
+            <label><input type="checkbox"> Volunteering</label>
+            <label><input type="checkbox"> History</label>
+            <label><input type="checkbox"> Geography</label>
+            <label><input type="checkbox"> Language</label>
+            <label><input type="checkbox"> Nature</label>
+          </div>
+        </div>
+      </div>
+      <div class="search-container">
+        <img src="{% static 'images/magnifying-glass.svg' %}" alt="Search" class="search-icon" />
+        <input type="text" class="search-input" placeholder="Search..." aria-label="Search" />
+      </div>
+    </div>
+
+    <!-- NAV-RIGHT -->
     <div class="nav-right">
       <button>About</button>
       <div class="profile-menu" id="profileMenu">
-        <img
-          src="{% static 'images/default-profile-picture.jpg' %}"
-          alt="Profile Picture"
-          class="profile-pic"
-        />
+        <img src="{% static 'images/default-profile-picture.jpg' %}" alt="Profile Picture" class="profile-pic" />
         <span>{{ registered_users.username }}</span> &#x25BC;
-
         <div class="dropdown-menu" id="dropdownMenu">
-            <form method="GET" action="/" style="margin: 0;">
-              <button type="submit">Home</button>
-            </form>
-            <form method="POST" action="{% url 'my_profile' %}" style="margin: 0;">
-              {% csrf_token %}
+          <form method="GET" action="/" style="margin: 0;">
+            <button type="submit">Home</button>
+          </form>
+          <form method="POST" action="{% url 'my_profile' %}" style="margin: 0;">
+            {% csrf_token %}
             <button type="submit">My Profile</button>
-            </form>
-            <button>Profile Settings</button>
-            <form method="POST" action="{% url 'logout' %}" style="margin: 0;">
-              {% csrf_token %}
-              <button type="submit">Logout</button>
-            </form>
+          </form>
+          <button>Profile Settings</button>
+          <form method="POST" action="{% url 'logout' %}" style="margin: 0;">
+            {% csrf_token %}
+            <button type="submit">Logout</button>
+          </form>
         </div>
       </div>
     </div>
@@ -239,7 +360,6 @@
 
   <div class="main-content">
     <div class="profile-section">
-      <!-- Display Django messages here -->
       {% if messages %}
         <div class="messages-container">
           {% for message in messages %}
@@ -262,66 +382,31 @@
           {% csrf_token %}
 
           <label for="username">Username</label>
-          <input
-            type="text"
-            id="username"
-            name="username"
-            value="{{ registered_users.username }}"
-            placeholder="Enter your username"
-          >
+          <input type="text" id="username" name="username" value="{{ registered_users.username }}" placeholder="Enter your username">
 
           <label for="name">Name</label>
-          <input
-            type="text"
-            id="name"
-            name="name"
-            value="{{ registered_users.name }}"
-            placeholder="Your name"
-          >
+          <input type="text" id="name" name="name" value="{{ registered_users.name }}" placeholder="Your name">
 
           <label for="email">Email</label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            value="{{ registered_users.email }}"
-            placeholder="john@example.com"
-          >
+          <input type="email" id="email" name="email" value="{{ registered_users.email }}" placeholder="john@example.com">
 
           <label for="password">Password</label>
-          <input
-            type="password"
-            id="password"
-            name="password"
-            placeholder="Enter new password (only if changing)"
-          >
+          <input type="password" id="password" name="password" placeholder="Enter new password (only if changing)">
 
           <label for="course">Course</label>
-          <input
-            type="text"
-            id="course"
-            name="course"
-            value="{{ registered_users.course }}"
-            placeholder="Computer Science"
-          >
+          <input type="text" id="course" name="course" value="{{ registered_users.course }}" placeholder="Computer Science">
 
           <label for="course_date">Course Start Date</label>
-          <input
-            type="date"
-            id="course_date"
-            name="course_date"
-            value="{{ registered_users.start_date|date:'Y-m-d' }}"
-          >
+          <input type="date" id="course_date" name="course_date" value="{{ registered_users.start_date|date:'Y-m-d' }}">
 
           <label for="interests">Interests</label>
-          <textarea
-            id="interests"
-            name="interests"
-            placeholder="music, sports, coding, etc."
-            rows="3"
-          >{{ registered_users.interests }}</textarea>
+          <textarea id="interests" name="interests" placeholder="music, sports, coding, etc." rows="3">{{ registered_users.interests }}</textarea>
 
-          <button type="submit">Update Profile</button>
+          <div class="action-buttons">
+            <button type="submit">Update Profile</button>
+            <button type="button">Data Protection Statement</button>
+            <button type="button">Request Data</button>
+          </div>
         </form>
       </div>
     </div>
@@ -333,9 +418,7 @@
       const dropdownMenu = document.getElementById('dropdownMenu');
 
       profileMenu.addEventListener('click', function (e) {
-        if (e.target.tagName.toLowerCase() === 'form' || e.target.closest('form')) {
-          return;
-        }
+        if (e.target.tagName.toLowerCase() === 'form' || e.target.closest('form')) return;
         dropdownMenu.classList.toggle('show');
       });
 
@@ -343,6 +426,43 @@
         if (!profileMenu.contains(event.target)) {
           dropdownMenu.classList.remove('show');
         }
+      });
+
+      // Toggle dropdowns in nav-center
+      function toggleDropdown(dropdownContent) {
+        dropdownContent.classList.toggle('show');
+      }
+      function closeAllDropdowns(except) {
+        const allDropdowns = document.querySelectorAll('.dropdown-content.show');
+        allDropdowns.forEach((dd) => {
+          if (dd !== except) {
+            dd.classList.remove('show');
+          }
+        });
+      }
+      const typeBtn = document.getElementById('typeBtn');
+      const typeDropdownContent = document.getElementById('typeDropdownContent');
+      typeBtn.addEventListener('click', function (e) {
+        closeAllDropdowns(typeDropdownContent);
+        toggleDropdown(typeDropdownContent);
+        e.stopPropagation();
+      });
+      typeDropdownContent.addEventListener('click', function (e) {
+        if (e.target.tagName.toLowerCase() === 'button') {
+          typeBtn.textContent = e.target.textContent;
+        }
+      });
+      const interestsDropdown = document.getElementById('interestsDropdown');
+      const interestsDropdownContent = document.getElementById('interestsDropdownContent');
+      interestsDropdown.querySelector('.dropdown-btn').addEventListener('click', function (e) {
+        closeAllDropdowns(interestsDropdownContent);
+        toggleDropdown(interestsDropdownContent);
+        e.stopPropagation();
+      });
+      document.addEventListener('click', function (event) {
+        if (!profileMenu.contains(event.target)) dropdownMenu.classList.remove('show');
+        if (!typeDropdown.contains(event.target)) typeDropdownContent.classList.remove('show');
+        if (!interestsDropdown.contains(event.target)) interestsDropdownContent.classList.remove('show');
       });
     });
   </script>
