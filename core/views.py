@@ -18,13 +18,6 @@ def home(request):
     return render(request, 'index.html')
 
 
-<<<<<<< HEAD
-def about_us(request):
-    return render(request, 'about-us.html')
-
-
-=======
->>>>>>> 2917abe6548762c601d771853191dbb50edbd319
 def login_view(request):
     if request.method == 'POST':
         username = request.POST.get('username')
