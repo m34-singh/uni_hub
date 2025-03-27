@@ -77,6 +77,7 @@
     }
 
     .dropdown-btn {
+      border-radius: 20px;
       background-color: #00000000;
       border: 1px solid #fcff50;
       color: #ffffff;
@@ -91,7 +92,7 @@
       left: 0;
       background: #fff;
       color: #333;
-      border-radius: 6px;
+      border-radius: 8px;
       padding: 10px;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
       display: none;
@@ -305,6 +306,7 @@
 
   <nav class="navbar">
     <div class="nav-center">
+      <!-- Type filter dropdown (e.g., All, Events, Communities) -->
       <div class="filter-dropdowns">
         <div class="filter-dropdown" id="typeDropdown">
           <button class="dropdown-btn" id="typeBtn">All</button>
@@ -315,30 +317,65 @@
           </div>
         </div>
 
+        <!-- Interests filter dropdown with checkboxes -->
         <div class="filter-dropdown" id="interestsDropdown">
           <button class="dropdown-btn">Interests</button>
           <div class="dropdown-content" id="interestsDropdownContent">
-            <label><input type="checkbox"> Art</label>
-            <label><input type="checkbox"> Gaming</label>
+            <label><input type="checkbox"> Music</label>
+            <label><input type="checkbox"> Sports</label>
             <label><input type="checkbox"> Coding</label>
+            <label><input type="checkbox"> Gaming</label>
+            <label><input type="checkbox"> Travel</label>
+            <label><input type="checkbox"> Art</label>
+            <label><input type="checkbox"> Science</label>
+            <label><input type="checkbox"> Fitness</label>
+            <label><input type="checkbox"> Books</label>
+            <label><input type="checkbox"> Technology</label>
+            <label><input type="checkbox"> Cooking</label>
+            <label><input type="checkbox"> Fashion</label>
+            <label><input type="checkbox"> Photography</label>
+            <label><input type="checkbox"> Animals</label>
+            <label><input type="checkbox"> Writing</label>
+            <label><input type="checkbox"> Crafts</label>
+            <label><input type="checkbox"> Business</label>
+            <label><input type="checkbox"> Education</label>
+            <label><input type="checkbox"> Mindfulness</label>
+            <label><input type="checkbox"> Politics</label>
+            <label><input type="checkbox"> Finance</label>
+            <label><input type="checkbox"> Cars</label>
+            <label><input type="checkbox"> Design</label>
+            <label><input type="checkbox"> Comedy</label>
+            <label><input type="checkbox"> Volunteering</label>
+            <label><input type="checkbox"> History</label>
+            <label><input type="checkbox"> Geography</label>
+            <label><input type="checkbox"> Language</label>
+            <label><input type="checkbox"> Nature</label>
           </div>
         </div>
       </div>
 
+      <!-- Search Bar -->
       <div class="search-container">
         <img src="{% static 'images/magnifying-glass.svg' %}" alt="Search" class="search-icon" />
         <input type="text" class="search-input" placeholder="Search..." aria-label="Search" />
       </div>
     </div>
 
+    <!-- Right side of navigation -->
     <div class="nav-right">
+<<<<<<< HEAD
       <a href="/about-us"> <!--Might kill this button cause the other one looks better suited-->
         <button>About</button>
       </a>
+=======
+      <button>About</button>
+      <!-- User Profile Dropdown -->
+>>>>>>> 2917abe6548762c601d771853191dbb50edbd319
       <div class="profile-menu" id="profileMenu">
         <img src="{% static 'images/default-profile-picture.jpg' %}" alt="Profile Picture" class="profile-pic" />
         <span>{{ registered_users.username }}</span> &#x25BC;
 
+        <!-- Dropdown menu with button routes -->
         <div class="dropdown-menu" id="dropdownMenu">
           <form method="POST" action="{% url 'my_profile' %}" style="margin: 0;">{% csrf_token %}
             <button type="submit">My Profile</button>
@@ -355,6 +392,8 @@
   </nav>
 
   <div class="main-content">
+
+    <!-- Hero Section with welcome message -->
     <div class="hero-section">
       <h1 class="hero-title">Welcome to University</h1>
       <p class="hero-subtitle">
@@ -370,33 +409,42 @@
       </div>
     </div>
 
+    <!-- Section with cards -->
     <div class="cards-container">
+
+      <!-- Card 1: Communities -->
       <div class="card">
         <img src="{% static 'images/stock-photo-1.png' %}" alt="Card One">
         <div class="card-content">
           <h3>Join Communities</h3>
-          <p>Join communities with other like-minded people to connect.</p>
+          <p>Join communities and connect with like-minded people.</p>
           <form method="POST" action="{% url 'communities' %}" style="margin: 0;">{% csrf_token %}
             <button type="submit">View</button>
           </form>
         </div>
       </div>
+
+      <!-- Card 2: Events -->
       <div class="card">
         <img src="{% static 'images/stock-photo-2.jpeg' %}" alt="Card Two">
         <div class="card-content">
           <h3>Join Events</h3>
           <p>Join events to meet and connect with people.</p>
-          <button>View</button>
+          <form method="POST" action="{% url 'events' %}" style="margin: 0;">{% csrf_token %}
+            <button type="submit">View</button>
+          </form>
         </div>
       </div>
     </div>
   </div>
 
   <script>
+    // Toggle visibility of a dropdown by adding/removing the 'show' class
     function toggleDropdown(dropdownContent) {
       dropdownContent.classList.toggle('show');
     }
 
+    // Close all open dropdowns except the one passed as 'except'
     function closeAllDropdowns(except) {
       const allDropdowns = document.querySelectorAll('.dropdown-content.show');
       allDropdowns.forEach((dd) => {
@@ -405,9 +453,11 @@
     }
 
     document.addEventListener('DOMContentLoaded', function () {
+      // Profile menu and its dropdown
       const profileMenu = document.getElementById('profileMenu');
       const dropdownMenu = document.getElementById('dropdownMenu');
 
+      // Toggle profile dropdown on click, but ignore clicks on form elements
       profileMenu.addEventListener('click', function (e) {
         if (e.target.tagName.toLowerCase() === 'form' || e.target.closest('form')) return;
         closeAllDropdowns(dropdownMenu);
@@ -415,10 +465,12 @@
         e.stopPropagation();
       });
 
+      // Type dropdown elements
       const typeBtn = document.getElementById('typeBtn');
       const typeDropdown = document.getElementById('typeDropdown');
       const typeDropdownContent = document.getElementById('typeDropdownContent');
 
+      // Show or hide type dropdown on click
       typeBtn.addEventListener('click', function (e) {
         closeAllDropdowns(typeDropdownContent);
         toggleDropdown(typeDropdownContent);
@@ -431,6 +483,7 @@
         }
       });
 
+      // Interests dropdown
       const interestsDropdown = document.getElementById('interestsDropdown');
       const interestsDropdownContent = document.getElementById('interestsDropdownContent');
       interestsDropdown.querySelector('.dropdown-btn').addEventListener('click', function (e) {
@@ -439,6 +492,7 @@
         e.stopPropagation();
       });
 
+      // Closes all dropdowns when clicking outside of them
       document.addEventListener('click', function (event) {
         if (!profileMenu.contains(event.target)) dropdownMenu.classList.remove('show');
         if (!typeDropdown.contains(event.target)) typeDropdownContent.classList.remove('show');

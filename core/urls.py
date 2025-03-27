@@ -10,7 +10,8 @@ from .views import (
     profile_settings,
     update_profile,
     my_profile,
-    communities
+    communities,
+    events
 )
 from . import views
 
@@ -38,4 +39,9 @@ urlpatterns = [
     path('communities/<int:community_id>/create-thread/', views.create_thread, name='create_thread'),
     path('communities/<int:community_id>/leave/', views.leave_community, name='leave_community'),
     path('communities/<int:community_id>/threads/<int:thread_id>/create-comment/', views.create_comment, name='create_comment'),
+
+    path("events/", events, name="events"),
+    path('events/create/', views.create_event, name='create_event'),
+    path('events/<int:event_id>/join/', views.join_event, name='join_event'),
+    path('events/<int:event_id>/leave/', views.leave_event, name='leave_event'),
 ]
