@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.urls import path, include
 from .views import (
     home,
+    about_us,
     login_view,
     logged_in,
     logout_view,
@@ -16,6 +17,8 @@ from . import views
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/", include("api.urls")),
+    
+    path('about-us/', about_us, name='about_us'),
 
     path("", home, name="home"),
     path("login/", login_view, name="login"),

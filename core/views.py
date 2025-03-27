@@ -19,6 +19,9 @@ def home(request):
     return render(request, 'index.html')
 
 
+def about_us(request):
+    return render(request, 'about-us.html')
+
 
 def login_view(request):
     if request.method == 'POST':
