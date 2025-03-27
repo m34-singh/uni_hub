@@ -45,6 +45,11 @@ def login_view(request):
 
     return render(request, 'login.html')
 
+def forgot_password(request):
+    return render(request, 'forgot-password.html')
+
+def forgot_password_sent(request):
+    return render(request, 'forgot-password-sent.html')
 
 def logout_view(request):
     request.session.flush()
