@@ -3,8 +3,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from datetime import datetime
-
-from .models import RegisteredUser, Community, CommunityMembership, Thread
+from .models import RegisteredUser, Community, CommunityMembership, Thread, Event
 
 def home(request):
     if 'registered_user_id' in request.session:
@@ -17,10 +16,6 @@ def home(request):
         
         return render(request, 'logged-in.html', {'registered_users': ruser})
     return render(request, 'index.html')
-
-
-def about_us(request):
-    return render(request, 'about-us.html')
 
 
 def login_view(request):
@@ -217,7 +212,7 @@ def update_profile(request):
         messages.success(request, "Profile updated successfully.")
         return redirect('profile-settings')
 
-    # If not POST, just go back to profile-settings (or wherever you prefer)
+    # If not POST, just go back to profile-settings (or wherever)
     return redirect('profile-settings')
 
 
@@ -337,7 +332,6 @@ def community_detail(request, community_id):
     # We'll fetch all threads for this community
     threads = Thread.objects.filter(community=community).order_by('-date_created')
 
-    # Optionally check if user is a member or show a "Join" button, etc.
     ruser_id = request.session['registered_user_id']
     ruser = RegisteredUser.objects.get(pk=ruser_id)
     membership_qs = CommunityMembership.objects.filter(user=ruser, community=community)
@@ -396,7 +390,7 @@ def create_thread(request, community_id):
         messages.error(request, "Community not found.")
         return redirect('communities')
 
-    # Check membership if you want to restrict thread creation to members:
+    # Check membership:
     membership = CommunityMembership.objects.filter(user=ruser, community=community).first()
     if not membership:
         messages.error(request, "You must join this community to create a thread.")
@@ -420,7 +414,7 @@ def create_thread(request, community_id):
         messages.success(request, f"Thread '{new_thread.title}' created successfully!")
         return redirect('community_detail', community_id=community_id)
 
-    # If somehow GET (not typical), just go back to detail
+    # If somehow GET, just go back to detail
     return redirect('community_detail', community_id=community_id)
 
 
@@ -449,7 +443,7 @@ def create_comment(request, community_id, thread_id):
         messages.error(request, "Thread not found in this community.")
         return redirect('community_detail', community_id=community_id)
 
-    # 3) Check if user is a member (if you want to restrict comment creation to members only)
+    # 3) Check if user is a member
     membership = CommunityMembership.objects.filter(user=ruser, community=community).first()
     if not membership:
         messages.error(request, "You must join this community to comment.")
@@ -472,3 +466,143 @@ def create_comment(request, community_id, thread_id):
         return redirect('community_detail', community_id=community_id)
 
     return redirect('community_detail', community_id=community_id)
+
+
+def events(request):
+    if 'registered_user_id' in request.session:
+        ruser_id = request.session['registered_user_id']
+        try:
+            ruser = RegisteredUser.objects.get(pk=ruser_id, is_active=True)
+        except RegisteredUser.DoesNotExist:
+            request.session.flush()
+            return redirect('login')
+        
+        all_events = Event.objects.all().order_by('-date_created')
+
+        # 1) Build a set of event IDs this user has joined:
+        from .models import EventRegistration
+        user_registrations = EventRegistration.objects.filter(user=ruser)
+        user_event_ids = set(reg.event_id for reg in user_registrations)
+
+        # 2) Pass them to template
+        return render(request, 'events.html', {
+            'registered_users': ruser,
+            'events_list': all_events,
+            'user_event_ids': user_event_ids,  # so we know if user joined each event
+        })
+    return render(request, 'index.html')
+
+
+def create_event(request):
+    if request.method == 'POST':
+        # 1) Check if user is logged in
+        if 'registered_user_id' not in request.session:
+            return redirect('login')
+
+        ruser_id = request.session['registered_user_id']
+        try:
+            ruser = RegisteredUser.objects.get(pk=ruser_id, is_active=True)
+        except RegisteredUser.DoesNotExist:
+            request.session.flush()
+            return redirect('login')
+
+        # 2) Check if user's role is admin or events_leader
+        if ruser.role not in ['admin', 'events_leader']:
+            messages.error(request, "You do not have permission to create an event.")
+            return redirect('events')
+
+        # 3) Read form fields
+        title = request.POST.get('title', '').strip()
+        description = request.POST.get('description', '').strip()
+        tags = request.POST.get('tags', '').strip()
+        event_date = request.POST.get('event_date', '').strip()
+        start_time = request.POST.get('start_time', '').strip()
+        location = request.POST.get('location', '').strip()
+        capacity = request.POST.get('capacity', '').strip()
+    
+
+        # Basic validation
+        if not title:
+            messages.error(request, "Title is required.")
+            return redirect('events')
+
+        # 4) Create & save new event
+        new_event = Event.objects.create(
+            title=title,
+            description=description,
+            tags=tags,
+            event_date=event_date,
+            start_time=start_time,
+            location=location,
+            capacity=capacity
+        )
+
+        messages.success(request, f"Event '{new_event.title}' created successfully!")
+        return redirect('events')
+
+    # If GET or other method, just redirect to events
+    return redirect('events')
+
+
+def join_event(request, event_id):
+    if 'registered_user_id' not in request.session:
+        return redirect('login')
+
+    ruser_id = request.session['registered_user_id']
+    try:
+        ruser = RegisteredUser.objects.get(pk=ruser_id, is_active=True)
+    except RegisteredUser.DoesNotExist:
+        request.session.flush()
+        return redirect('login')
+
+    try:
+        ev = Event.objects.get(pk=event_id)
+    except Event.DoesNotExist:
+        messages.error(request, "Event not found.")
+        return redirect('events')
+
+    # 1) Check if user is already registered
+    from .models import EventRegistration
+    already_registered = EventRegistration.objects.filter(user=ruser, event=ev).exists()
+    if already_registered:
+        messages.info(request, "You have already joined this event.")
+        return redirect('events')
+
+    # 2) Check capacity (if set)
+    if ev.capacity is not None:
+        current_count = EventRegistration.objects.filter(event=ev).count()
+        if current_count >= ev.capacity:
+            messages.error(request, "Event is full.")
+            return redirect('events')
+
+    # 3) Otherwise, create the registration
+    EventRegistration.objects.create(user=ruser, event=ev)
+    messages.success(request, f"You have joined the '{ev.title}' event!")
+    return redirect('events')
+
+
+def leave_event(request, event_id):
+    if 'registered_user_id' not in request.session:
+        return redirect('login')
+
+    ruser_id = request.session['registered_user_id']
+    try:
+        ruser = RegisteredUser.objects.get(pk=ruser_id, is_active=True)
+    except RegisteredUser.DoesNotExist:
+        request.session.flush()
+        return redirect('login')
+
+    try:
+        ev = Event.objects.get(pk=event_id)
+    except Event.DoesNotExist:
+        messages.error(request, "Event not found.")
+        return redirect('events')
+
+    from .models import EventRegistration
+    reg_qs = EventRegistration.objects.filter(user=ruser, event=ev)
+    if reg_qs.exists():
+        reg_qs.delete()
+        messages.success(request, f"You have left the '{ev.title}' event.")
+    else:
+        messages.error(request, "You are not registered for this event.")
+    return redirect('events')

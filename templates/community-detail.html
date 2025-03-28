@@ -257,10 +257,9 @@
 <body>
   <div class="overlay"></div>
 
-  <!-- NAVBAR (same as communities.html) -->
+  <!-- NAVBAR -->
   <nav class="navbar">
     <div class="nav-left">
-      <!-- If you want brand or search, put here -->
     </div>
     <div class="nav-right">
       <button>About</button>
@@ -272,6 +271,10 @@
         />
         <span>{{ registered_users.username }}</span> &#x25BC;
         <div class="dropdown-menu" id="dropdownMenu">
+          <!-- Home -->
+          <form method="GET" action="/" style="margin: 0;">
+            <button type="submit">Home</button>
+          </form>
           <!-- My Profile -->
           <form method="POST" action="{% url 'my_profile' %}" style="margin: 0;">
             {% csrf_token %}
@@ -303,7 +306,6 @@
 
   <!-- MAIN CONTENT -->
   <div class="main-content">
-    <!-- HERO: Show the community's name, short subtext -->
     <section class="hero-section">
       <h1 class="hero-title">{{ community.title }} Community</h1>
       {% if community.description %}
@@ -313,7 +315,7 @@
 
     <!-- THREADS SECTION -->
     <section class="threads-section">
-      <!-- If user is a member, let them create a thread -->
+      <!-- If user is a member, this lets them create a thread -->
       {% if is_member %}
         <div class="create-thread-form">
           <form method="POST" action="{% url 'create_thread' community.id %}">

@@ -2,7 +2,6 @@ from django.contrib import admin
 from django.urls import path, include
 from .views import (
     home,
-    about_us,
     login_view,
     forgot_password,
     forgot_password_sent,
@@ -12,15 +11,14 @@ from .views import (
     profile_settings,
     update_profile,
     my_profile,
-    communities
+    communities,
+    events
 )
 from . import views
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/", include("api.urls")),
-    
-    path('about-us/', about_us, name='about_us'),
 
     path("", home, name="home"),
     path("login/", login_view, name="login"),
@@ -42,4 +40,9 @@ urlpatterns = [
     path('communities/<int:community_id>/create-thread/', views.create_thread, name='create_thread'),
     path('communities/<int:community_id>/leave/', views.leave_community, name='leave_community'),
     path('communities/<int:community_id>/threads/<int:thread_id>/create-comment/', views.create_comment, name='create_comment'),
+
+    path("events/", events, name="events"),
+    path('events/create/', views.create_event, name='create_event'),
+    path('events/<int:event_id>/join/', views.join_event, name='join_event'),
+    path('events/<int:event_id>/leave/', views.leave_event, name='leave_event'),
 ]
