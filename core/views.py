@@ -17,6 +17,8 @@ def home(request):
         return render(request, 'logged-in.html', {'registered_users': ruser})
     return render(request, 'index.html')
 
+def about_us(request):
+    return render(request, 'about-us.html')
 
 def login_view(request):
     if request.method == 'POST':

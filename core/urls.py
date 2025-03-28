@@ -3,6 +3,7 @@ from django.urls import path, include
 from .views import (
     home,
     login_view,
+    about_us,
     forgot_password,
     forgot_password_sent,
     logged_in,
@@ -19,6 +20,8 @@ from . import views
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/", include("api.urls")),
+
+    path("about-us/", about_us, name="about-us"),
 
     path("", home, name="home"),
     path("login/", login_view, name="login"),
