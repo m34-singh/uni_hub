@@ -166,7 +166,9 @@
   <div class="overlay"></div>
 
   <nav class="navbar">
-    <button>About</button>
+    <form method="GET" action="{% url 'about-us' %}" style="margin: 0;">
+      <button type="submit">About</button>
+    </form>
     <a href="/">
       <button>Home</button>
     </a>
@@ -199,7 +201,7 @@
         <button class="login-btn" type="submit">Login</button>
 
         <div class="extra-links">
-          <a href="#" class="forgot-password">Forgot Password?</a>
+          <a href="{% url 'forgot-password' %}" class="forgot-password">Forgot Password?</a>
 
           <br />
           <a href="{% url 'register' %}" class="register-link">

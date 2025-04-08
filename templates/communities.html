@@ -127,7 +127,7 @@
       align-items: center;
       gap: 20px;
     }
-    .nav-right > button {
+    .nav-right button {
       background-color: #fcff50;
       border: 1px solid #fcff50;
       color: #000;
@@ -453,7 +453,9 @@
 
     <!-- NAV-RIGHT -->
     <div class="nav-right">
-      <button>About</button>
+      <form method="POST" action="{% url 'about-us' %}" style="margin: 0;">{% csrf_token %}
+        <button type="submit">About</button>
+      </form>
       <div class="profile-menu" id="profileMenu">
         <img
           src="{% static 'images/default-profile-picture.jpg' %}"

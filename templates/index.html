@@ -79,7 +79,9 @@
   <div class="overlay"></div>
   <!-- Navbar buttons here -->
   <nav class="navbar">
-    <button>About</button>
+    <form method="GET" action="{% url 'about-us' %}" style="margin: 0;">
+      <button type="submit">About</button>
+    </form>
     <a href="login">
       <button>Login</button>
     </a>

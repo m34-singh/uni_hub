@@ -18,6 +18,18 @@ def home(request):
     return render(request, 'index.html')
 
 
+def about_us(request):
+    return render(request, 'about-us.html')
+
+
+def forgot_password(request):
+    return render(request, 'forgot-password.html')
+
+
+def forgot_password_sent(request):
+    return render(request, 'forgot-password-sent.html')
+
+
 def login_view(request):
     if request.method == 'POST':
         username = request.POST.get('username')

@@ -45,16 +45,18 @@
       align-items: center;
       gap: 20px;
     }
-    .nav-right > button {
+    .nav-right button {
       background-color: #fcff50;
       border: 1px solid #fcff50;
       color: #000;
       padding: 10px 15px;
       cursor: pointer;
       font-size: 0.8em;
+      transition: background-color 0.3s ease, color 0.3s ease;
     }
-    .nav-right > button:hover {
-      background-color: #fcff50;
+
+    .nav-right button:hover {
+      background-color: #e0e234;
       color: #000;
     }
 
@@ -307,7 +309,9 @@
   <!-- ========== NAVBAR ========== -->
   <nav class="navbar">
     <div class="nav-right">
-      <button>About</button>
+      <form method="POST" action="{% url 'about-us' %}" style="margin: 0;">{% csrf_token %}
+        <button type="submit">About</button>
+      </form>
       <div class="profile-menu" id="profileMenu">
         <img 
           src="{% static 'images/default-profile-picture.jpg' %}"
