@@ -107,6 +107,7 @@
   <!-- "Go back" button in top right -->
   <div class="home-button">
     <form method="POST" action="{% url 'profile-settings' %}" style="margin: 0;">
+      {% csrf_token %}
       <button type="submit">Go back</button>
     </form>
   </div>
