@@ -5,12 +5,10 @@
   <meta charset="UTF-8">
   <title>Communities</title>
   <style>
-    /* GLOBAL BOX-SIZING */
     *, *::before, *::after {
       box-sizing: border-box;
     }
 
-    /* RESET & BASE */
     html, body {
       margin: 0;
       padding: 0;
@@ -35,7 +33,8 @@
     /* NAVBAR */
     .navbar {
       position: fixed;
-      top: 0; left: 0;
+      top: 0; 
+      left: 0;
       width: 100%;
       background: #000;
       padding: 15px 20px;
@@ -44,8 +43,9 @@
       box-sizing: border-box;
       z-index: 1000;
     }
-    /* NAV-CENTER: filter dropdowns + search bar */
-    .nav-center {
+
+    /* SEARCH FORM (TYPE, INTERESTS AND SEARCH) */
+    .search-form {
       display: flex;
       align-items: center;
       gap: 20px;
@@ -99,6 +99,7 @@
     .dropdown-content label:hover {
       background: #f0f0f0;
     }
+
     .search-container {
       display: flex;
       align-items: center;
@@ -121,6 +122,22 @@
       width: 180px;
     }
 
+    /* SEARCH BUTTON */
+    .search-submit {
+      background-color: #fcff50;
+      border: 1px solid #fcff50;
+      color: #000;
+      padding: 8px 15px;
+      cursor: pointer;
+      font-size: 0.8em;
+      border-radius: 20px;
+      transition: background-color 0.3s ease;
+    }
+    .search-submit:hover {
+      background-color: #fcff50;
+      color: #000;
+    }
+
     /* NAV-RIGHT (profile menu) */
     .nav-right {
       display: flex;
@@ -140,6 +157,35 @@
       background-color: #fcff50;
       color: #000;
     }
+
+    /* NOTIFICATION BELL AND DROPDOWN */
+    .notification-section {
+      position: relative;
+      cursor: pointer;
+    }
+    .notification-icon {
+      width: 24px;
+      height: 24px;
+      display: block;
+    }
+    .notification-dropdown {
+      position: absolute;
+      top: 220%;
+      right: 0;
+      background: #fff;
+      color: #333;
+      border-radius: 8px;
+      padding: 10px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+      display: none;
+      min-width: 250px;
+      min-height: 250px;
+      z-index: 2002;
+    }
+    .notification-dropdown.show {
+      display: block;
+    }
+
     .profile-menu {
       position: relative;
       display: flex;
@@ -225,7 +271,7 @@
       line-height: 1.5;
     }
 
-    /* TABS & CREATE POST BUTTON */
+    /* TABS AND CREATE POST BUTTON */
     .communities-tabs {
       max-width: 800px;
       margin: 20px auto 0 auto;
@@ -363,7 +409,7 @@
       border: 1px solid #ccc;
       border-radius: 4px;
     }
-    .modal-content .btn-row {
+    .btn-row {
       display: flex;
       justify-content: flex-end;
       gap: 10px;
@@ -382,6 +428,34 @@
       background: #ccc;
       color: #333;
     }
+
+    /* TAGS SELECTION (CLICKABLE) */
+    .tags-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .tag-option {
+      display: inline-block;
+      background: #f0f0f0;
+      color: #333;
+      border: 1px solid #ccc;
+      padding: 6px 10px;
+      border-radius: 4px;
+      font-size: 0.9em;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .tag-option:hover {
+      background-color: #fcff50;
+      color: #000;
+    }
+    .tag-option.selected {
+      background-color: #fcff50;
+      color: #000;
+      border: 1px solid #fcff50;
+    }
   </style>
 </head>
 <body>
@@ -389,73 +463,98 @@
 
   <!-- NAVBAR -->
   <nav class="navbar">
-    <!-- NAV-CENTER: Filter dropdowns + Search bar -->
-    <div class="nav-center">
+    <!-- Wrap everything in a GET form to search -->
+    <form method="GET" action="{% url 'search' %}" class="search-form">
       <div class="filter-dropdowns">
-        <!-- Type dropdown -->
+        <!-- TYPE DROPDOWN -->
         <div class="filter-dropdown" id="typeDropdown">
-          <button class="dropdown-btn" id="typeBtn">All</button>
+          <input type="hidden" name="type" id="typeInput" value="All" />
+          <button type="button" class="dropdown-btn" id="typeBtn">All</button>
           <div class="dropdown-content" id="typeDropdownContent">
-            <button>All</button>
-            <button>Events</button>
-            <button>Communities</button>
+            <button type="button">All</button>
+            <button type="button">Events</button>
+            <button type="button">Communities</button>
           </div>
         </div>
 
-        <!-- Interests dropdown -->
+        <!-- INTERESTS DROPDOWN -->
         <div class="filter-dropdown" id="interestsDropdown">
-          <button class="dropdown-btn">Interests</button>
+          <button type="button" class="dropdown-btn">Interests</button>
           <div class="dropdown-content" id="interestsDropdownContent">
-            <label><input type="checkbox"> Music</label>
-            <label><input type="checkbox"> Sports</label>
-            <label><input type="checkbox"> Coding</label>
-            <label><input type="checkbox"> Gaming</label>
-            <label><input type="checkbox"> Travel</label>
-            <label><input type="checkbox"> Art</label>
-            <label><input type="checkbox"> Science</label>
-            <label><input type="checkbox"> Fitness</label>
-            <label><input type="checkbox"> Books</label>
-            <label><input type="checkbox"> Technology</label>
-            <label><input type="checkbox"> Cooking</label>
-            <label><input type="checkbox"> Fashion</label>
-            <label><input type="checkbox"> Photography</label>
-            <label><input type="checkbox"> Animals</label>
-            <label><input type="checkbox"> Writing</label>
-            <label><input type="checkbox"> Crafts</label>
-            <label><input type="checkbox"> Business</label>
-            <label><input type="checkbox"> Education</label>
-            <label><input type="checkbox"> Mindfulness</label>
-            <label><input type="checkbox"> Politics</label>
-            <label><input type="checkbox"> Finance</label>
-            <label><input type="checkbox"> Cars</label>
-            <label><input type="checkbox"> Design</label>
-            <label><input type="checkbox"> Comedy</label>
-            <label><input type="checkbox"> Volunteering</label>
-            <label><input type="checkbox"> History</label>
-            <label><input type="checkbox"> Geography</label>
-            <label><input type="checkbox"> Language</label>
-            <label><input type="checkbox"> Nature</label>
+            <!-- Each checked box sends name="interests" in GET -->
+            <label><input type="checkbox" name="interests" value="Music"> Music</label>
+            <label><input type="checkbox" name="interests" value="Sports"> Sports</label>
+            <label><input type="checkbox" name="interests" value="Coding"> Coding</label>
+            <label><input type="checkbox" name="interests" value="Gaming"> Gaming</label>
+            <label><input type="checkbox" name="interests" value="Travel"> Travel</label>
+            <label><input type="checkbox" name="interests" value="Art"> Art</label>
+            <label><input type="checkbox" name="interests" value="Science"> Science</label>
+            <label><input type="checkbox" name="interests" value="Fitness"> Fitness</label>
+            <label><input type="checkbox" name="interests" value="Books"> Books</label>
+            <label><input type="checkbox" name="interests" value="Technology"> Technology</label>
+            <label><input type="checkbox" name="interests" value="Cooking"> Cooking</label>
+            <label><input type="checkbox" name="interests" value="Fashion"> Fashion</label>
+            <label><input type="checkbox" name="interests" value="Photography"> Photography</label>
+            <label><input type="checkbox" name="interests" value="Animals"> Animals</label>
+            <label><input type="checkbox" name="interests" value="Writing"> Writing</label>
+            <label><input type="checkbox" name="interests" value="Crafts"> Crafts</label>
+            <label><input type="checkbox" name="interests" value="Business"> Business</label>
+            <label><input type="checkbox" name="interests" value="Education"> Education</label>
+            <label><input type="checkbox" name="interests" value="Mindfulness"> Mindfulness</label>
+            <label><input type="checkbox" name="interests" value="Politics"> Politics</label>
+            <label><input type="checkbox" name="interests" value="Finance"> Finance</label>
+            <label><input type="checkbox" name="interests" value="Cars"> Cars</label>
+            <label><input type="checkbox" name="interests" value="Design"> Design</label>
+            <label><input type="checkbox" name="interests" value="Comedy"> Comedy</label>
+            <label><input type="checkbox" name="interests" value="Volunteering"> Volunteering</label>
+            <label><input type="checkbox" name="interests" value="History"> History</label>
+            <label><input type="checkbox" name="interests" value="Geography"> Geography</label>
+            <label><input type="checkbox" name="interests" value="Language"> Language</label>
+            <label><input type="checkbox" name="interests" value="Nature"> Nature</label>
           </div>
         </div>
       </div>
 
-      <!-- Search bar -->
+      <!-- SEARCH BAR -->
       <div class="search-container">
-        <img src="{% static 'images/magnifying-glass.svg' %}" alt="Search" class="search-icon" />
+        <img
+          src="{% static 'images/magnifying-glass.svg' %}"
+          alt="Search"
+          class="search-icon"
+        />
         <input
           type="text"
+          name="q"
           class="search-input"
           placeholder="Search..."
           aria-label="Search"
         />
       </div>
-    </div>
+
+      <!-- Search button -->
+      <button type="submit" class="search-submit">Search</button>
+    </form>
 
     <!-- NAV-RIGHT -->
     <div class="nav-right">
-      <form method="POST" action="{% url 'about-us' %}" style="margin: 0;">{% csrf_token %}
+      <form method="POST" action="{% url 'about-us' %}" style="margin: 0;">
+        {% csrf_token %}
         <button type="submit">About</button>
       </form>
+
+      <!-- Notification bell icon -->
+      <div class="notification-section" id="notificationSection">
+        <img 
+          src="{% static 'images/notification.svg' %}" 
+          alt="Notifications" 
+          class="notification-icon" 
+        />
+        <div class="notification-dropdown" id="notificationDropdown">
+          <p>No notifications yet</p>
+        </div>
+      </div>
+
+      <!-- Profile menu -->
       <div class="profile-menu" id="profileMenu">
         <img
           src="{% static 'images/default-profile-picture.jpg' %}"
@@ -488,7 +587,7 @@
     </div>
   </nav>
 
-  <!-- MESSAGES SECTION -->
+  <!-- MESSAGES -->
   {% if messages %}
     <div class="messages-container">
       {% for message in messages %}
@@ -497,22 +596,22 @@
     </div>
   {% endif %}
 
+  <!-- MAIN -->
   <div class="main-content">
     <!-- PAGE TITLE -->
     <section class="hero-section">
       <h1 class="hero-title">COMMUNITIES</h1>
-      <p class="hero-subtitle">Discover and join student-led communities tailored to your interests!</p>
+      <p class="hero-subtitle">
+        Discover and join student-led communities tailored to your interests!
+      </p>
     </section>
 
-    <!-- TABS & CREATE POST BUTTON -->
+    <!-- TABS & CREATE COMMUNITY BUTTON -->
     <div class="communities-tabs">
-      <!-- Left side: Tabs (Popular, Newest, Following) -->
       <div class="tabs-left">
         <a href="#" class="active">Popular</a>
         <a href="#">Newest</a>
-        <a href="#">Following</a>
       </div>
-      <!-- Right side: "Create Post" if user has a privileged role -->
       <div class="tabs-right">
         {% if registered_users.role in "admin community_leader events_leader" %}
           <button class="create-post-btn" id="openModalBtn">Create Post</button>
@@ -520,31 +619,26 @@
       </div>
     </div>
 
-    <!-- SHOW COMMUNITIES OR "NO POSTS YET" -->
+    <!-- COMMUNITIES LIST -->
     {% if communities_list and communities_list|length > 0 %}
       <div class="communities-list">
         {% for com in communities_list %}
           <div class="community-item">
             <div class="community-info">
-              <!-- Link to community_detail -->
               <h3>
-                <a href="{% url 'community_detail' com.id %}">
-                  {{ com.title }}
-                </a>
+                <a href="{% url 'community_detail' com.id %}">{{ com.title }}</a>
               </h3>
               <p>{{ com.description }}</p>
               <p><em>{{ com.tags }}</em></p>
             </div>
-
-            <!-- If user is already a member, show "Leave". Otherwise, show "Join". -->
             {% if com.id in user_membership_ids %}
-              <!-- Leave form -->
+              <!-- "Leave" form -->
               <form method="POST" action="{% url 'leave_community' com.id %}">
                 {% csrf_token %}
                 <button type="submit" class="join-btn">Leave</button>
               </form>
             {% else %}
-              <!-- Join form -->
+              <!-- "Join" form -->
               <form method="POST" action="{% url 'join_community' com.id %}">
                 {% csrf_token %}
                 <button type="submit" class="join-btn">Join</button>
@@ -567,13 +661,44 @@
       <form id="createCommunityForm" method="POST" action="{% url 'create_community' %}">
         {% csrf_token %}
         <label for="title">Community Title</label>
-        <input type="text" id="title" name="title" required>
+        <input type="text" id="title" name="title" required/>
 
         <label for="description">Description</label>
         <textarea id="description" name="description" rows="3"></textarea>
 
-        <label for="tags">Tags (comma-separated)</label>
-        <input type="text" id="tags" name="tags">
+        <label>Select Tags</label>
+        <div class="tags-container" id="tagsContainer">
+          <div class="tag-option" data-value="music">Music</div>
+          <div class="tag-option" data-value="sports">Sports</div>
+          <div class="tag-option" data-value="coding">Coding</div>
+          <div class="tag-option" data-value="gaming">Gaming</div>
+          <div class="tag-option" data-value="travel">Travel</div>
+          <div class="tag-option" data-value="art">Art</div>
+          <div class="tag-option" data-value="science">Science</div>
+          <div class="tag-option" data-value="fitness">Fitness</div>
+          <div class="tag-option" data-value="books">Books</div>
+          <div class="tag-option" data-value="technology">Technology</div>
+          <div class="tag-option" data-value="cooking">Cooking</div>
+          <div class="tag-option" data-value="fashion">Fashion</div>
+          <div class="tag-option" data-value="photography">Photography</div>
+          <div class="tag-option" data-value="animals">Animals</div>
+          <div class="tag-option" data-value="writing">Writing</div>
+          <div class="tag-option" data-value="crafts">Crafts</div>
+          <div class="tag-option" data-value="business">Business</div>
+          <div class="tag-option" data-value="education">Education</div>
+          <div class="tag-option" data-value="mindfulness">Mindfulness</div>
+          <div class="tag-option" data-value="politics">Politics</div>
+          <div class="tag-option" data-value="finance">Finance</div>
+          <div class="tag-option" data-value="cars">Cars</div>
+          <div class="tag-option" data-value="design">Design</div>
+          <div class="tag-option" data-value="comedy">Comedy</div>
+          <div class="tag-option" data-value="volunteering">Volunteering</div>
+          <div class="tag-option" data-value="history">History</div>
+          <div class="tag-option" data-value="geography">Geography</div>
+          <div class="tag-option" data-value="language">Language</div>
+          <div class="tag-option" data-value="nature">Nature</div>
+        </div>
+        <input type="hidden" name="tags" id="tagsHiddenInput"/>
 
         <div class="btn-row">
           <button type="button" class="cancel-btn" onclick="closeModal()">Cancel</button>
@@ -584,23 +709,28 @@
   </div>
 
   <script>
-    // Toggles a dropdown content by adding/removing the "show" class
+    // Toggle a dropdown by adding/removing 'show' class
     function toggleDropdown(dropdownContent) {
       dropdownContent.classList.toggle('show');
     }
 
-    // Close any open dropdown that's not the one clicked
+    // Close all open dropdowns (including notifications) except 'except'
     function closeAllDropdowns(except) {
-      const allDropdowns = document.querySelectorAll('.dropdown-content.show');
-      allDropdowns.forEach((dd) => {
-        if (dd !== except) {
-          dd.classList.remove('show');
-        }
+      const allDropdowns = document.querySelectorAll(
+        '.dropdown-content.show, .notification-dropdown.show, .dropdown-menu.show'
+      );
+      allDropdowns.forEach(dd => {
+        if (dd !== except) dd.classList.remove('show');
       });
     }
 
+    // Close the "Create Community" modal
+    function closeModal() {
+      document.getElementById('createCommunityModal').style.display = 'none';
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
-      // Profile menu
+      // PROFILE MENU
       const profileMenu = document.getElementById('profileMenu');
       const dropdownMenu = document.getElementById('dropdownMenu');
       profileMenu.addEventListener('click', function(e) {
@@ -612,25 +742,32 @@
         e.stopPropagation();
       });
 
-      // Type dropdown references
-      const typeBtn = document.getElementById('typeBtn');
-      const typeDropdown = document.getElementById('typeDropdown');
-      const typeDropdownContent = document.getElementById('typeDropdownContent');
+      // NOTIFICATION ICON
+      const notificationSection = document.getElementById('notificationSection');
+      const notificationDropdown = document.getElementById('notificationDropdown');
+      notificationSection.addEventListener('click', function (e) {
+        closeAllDropdowns(notificationDropdown);
+        notificationDropdown.classList.toggle('show');
+        e.stopPropagation();
+      });
 
-      // Toggle "Type" dropdown
+      // TYPE DROPDOWN
+      const typeBtn = document.getElementById('typeBtn');
+      const typeDropdownContent = document.getElementById('typeDropdownContent');
+      const typeInput = document.getElementById('typeInput');
       typeBtn.addEventListener('click', function(e) {
         closeAllDropdowns(typeDropdownContent);
         toggleDropdown(typeDropdownContent);
         e.stopPropagation();
       });
-      // When user clicks inside the "Type" dropdown, change the button text
       typeDropdownContent.addEventListener('click', function(e) {
         if (e.target.tagName.toLowerCase() === 'button') {
           typeBtn.textContent = e.target.textContent;
+          typeInput.value = e.target.textContent;
         }
       });
 
-      // Interests dropdown
+      // INTERESTS DROPDOWN
       const interestsDropdown = document.getElementById('interestsDropdown');
       const interestsDropdownContent = document.getElementById('interestsDropdownContent');
       interestsDropdown.querySelector('.dropdown-btn').addEventListener('click', function(e) {
@@ -639,20 +776,15 @@
         e.stopPropagation();
       });
 
-      // Close if clicking outside
+      // CLOSES ANY DROPDOWN IF CLICKING OUTSIDE
       document.addEventListener('click', function(e) {
-        if (!profileMenu.contains(e.target)) {
-          dropdownMenu.classList.remove('show');
-        }
-        if (!typeDropdown.contains(e.target)) {
-          typeDropdownContent.classList.remove('show');
-        }
-        if (!interestsDropdown.contains(e.target)) {
-          interestsDropdownContent.classList.remove('show');
-        }
+        if (!profileMenu.contains(e.target)) dropdownMenu.classList.remove('show');
+        if (!notificationSection.contains(e.target)) notificationDropdown.classList.remove('show');
+        if (!typeBtn.contains(e.target)) typeDropdownContent.classList.remove('show');
+        if (!interestsDropdown.contains(e.target)) interestsDropdownContent.classList.remove('show');
       });
 
-      // Create community modal
+      // CREATE COMMUNITY MODAL
       const openModalBtn = document.getElementById('openModalBtn');
       const createCommunityModal = document.getElementById('createCommunityModal');
       if (openModalBtn) {
@@ -660,11 +792,29 @@
           createCommunityModal.style.display = 'flex';
         });
       }
-    });
 
-    function closeModal() {
-      document.getElementById('createCommunityModal').style.display = 'none';
-    }
+      // TAG SELECTION
+      const tagOptions = document.querySelectorAll('.tag-option');
+      const tagsHiddenInput = document.getElementById('tagsHiddenInput');
+      let selectedTags = [];
+
+      tagOptions.forEach(option => {
+        option.addEventListener('click', function() {
+          const value = option.getAttribute('data-value');
+          // If already selected, remove it
+          if (selectedTags.includes(value)) {
+            selectedTags = selectedTags.filter(item => item !== value);
+            option.classList.remove('selected');
+          } else {
+            // Otherwise, add it
+            selectedTags.push(value);
+            option.classList.add('selected');
+          }
+          // Update hidden input with comma-separated tags
+          tagsHiddenInput.value = selectedTags.join(',');
+        });
+      });
+    });
   </script>
 </body>
 </html>

@@ -13,7 +13,8 @@ from .views import (
     update_profile,
     my_profile,
     communities,
-    events
+    events,
+    data_protection,
 )
 from . import views
 
@@ -26,11 +27,12 @@ urlpatterns = [
     path("", home, name="home"),
     path("login/", login_view, name="login"),
     path("logged-in/", logged_in, name="logged-in"),
-    path("forgot-password/" , views.forgot_password, name="forgot-password"),
-    path("forgot-password-sent/", views.forgot_password_sent, name="forgot-password-sent"),
+    path("forgot-password/" , forgot_password, name="forgot-password"),
+    path("forgot-password-sent/", forgot_password_sent, name="forgot-password-sent"),
     path("logout/", logout_view, name="logout"),
     path("register/", register_view, name="register"),
     path("check-availability/", views.check_availability, name="check_availability"),
+    path("data-protection/", data_protection, name="data-protection"),
 
     path("profile-settings/", profile_settings, name="profile-settings"),
     path("update-profile/", update_profile, name="update_profile"),
@@ -48,4 +50,8 @@ urlpatterns = [
     path('events/create/', views.create_event, name='create_event'),
     path('events/<int:event_id>/join/', views.join_event, name='join_event'),
     path('events/<int:event_id>/leave/', views.leave_event, name='leave_event'),
+
+    path("search-results/", views.search_results, name="search-results"),
+    path('search/', views.search_view, name='search'),
+
 ]

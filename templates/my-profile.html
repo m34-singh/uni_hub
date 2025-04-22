@@ -5,7 +5,6 @@
   <meta charset="UTF-8">
   <title>My Profile</title>
   <style>
-    /* RESET & BASE STYLES */
     html, body {
       margin: 0;
       padding: 0;
@@ -26,7 +25,7 @@
       z-index: -1;
     }
 
-    /* ========== NAVBAR ========== */
+    /* NAVBAR */
     .navbar {
       position: fixed;
       top: 0;
@@ -160,7 +159,7 @@
       background: #f0f0f0;
     }
 
-    /* ========== LEFT SIDEBAR ========== */
+    /* LEFT SIDEBAR */
     .sidebar {
       position: fixed;
       top: 60px;
@@ -195,7 +194,7 @@
       background: #1c252d;
     }
 
-    /* ========== MAIN CONTENT ========== */
+    /* MAIN */
     .main-content {
       margin-left: 220px;
       padding-top: 80px;
@@ -255,7 +254,7 @@
       margin-bottom: 20px;
     }
 
-    /* TWO-COLUMN LAYOUT: INTRO + TIMELINE FEED */
+    /* INTRO AND TIMELINE FEED */
     .profile-body {
       display: grid;
       grid-template-columns: 360px 1fr;
@@ -277,8 +276,8 @@
       position: absolute;
       left: 0;
       bottom: 0;
-      width: 60px;    /* length of the underline */
-      height: 2px;    /* thickness of the underline */
+      width: 60px;
+      height: 2px;
       background: #fcff50;
     }
 
@@ -306,7 +305,7 @@
 <body>
   <div class="overlay"></div>
 
-  <!-- ========== NAVBAR ========== -->
+  <!-- NAVBAR -->
   <nav class="navbar">
     <div class="nav-right">
       <form method="POST" action="{% url 'about-us' %}" style="margin: 0;">{% csrf_token %}
@@ -341,7 +340,7 @@
     </div>
   </nav>
 
-  <!-- ========== LEFT SIDEBAR ========== -->
+  <!-- LEFT SIDEBAR -->
   <aside class="sidebar">
     <div class="menu-title">Recently Joined Communities</div>
     <ul>
@@ -358,7 +357,7 @@
     </ul>
   </aside>
 
-  <!-- ========== MAIN CONTENT ========== -->
+  <!-- MAIN -->
   <section class="main-content">
     <!-- COVER AREA -->
     <div class="profile-cover">
@@ -374,7 +373,7 @@
     <!-- Horizontal line below the cover/profile -->
     <div class="banner-separator"></div>
 
-    <!-- INTRO + TIMELINE -->
+    <!-- INTRO AND TIMELINE -->
     <div class="profile-body">
       <!-- Introduction -->
       <div>

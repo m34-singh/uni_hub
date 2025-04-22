@@ -2,51 +2,36 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <title>{{ community.title }} - Threads</title>
+  <meta charset="UTF-8">
+  <title>Search Results</title>
   <style>
-    *, *::before, *::after {
-      box-sizing: border-box;
-    }
-
-    html, body {
-      margin: 0;
-      padding: 0;
-      width: 100%;
-      min-height: 100vh;
-      overflow-x: hidden;
-      font-family: Arial, sans-serif;
-      background: url('{% static "images/dark-blue-background.png" %}') no-repeat center center fixed;
-      background-size: cover;
-      color: #fff;
-    }
-
-    .overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.7);
-      z-index: -1;
-    }
+  html, body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: #000;
+    background-image: url('{% static "images/dark-blue-background.png" %}');
+    background-repeat: repeat;
+    background-size: cover;
+    background-attachment: fixed;
+    color: #fff;
+  }
 
     /* NAVBAR */
     .navbar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
       background: #000;
       padding: 15px 20px;
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
       box-sizing: border-box;
       z-index: 1000;
+      justify-content: space-between;
     }
-
-    /* The search and filter form */
+    /* Search form and filters */
     .search-form {
       margin: 0 auto;
       display: flex;
@@ -78,7 +63,7 @@
       color: #333;
       border-radius: 8px;
       padding: 10px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
       display: none;
       min-width: 140px;
       z-index: 2001;
@@ -136,8 +121,7 @@
       background-color: #fcff50;
       color: #000;
     }
-
-    /* NAV-RIGHT */
+    /* Nav-Right */
     .nav-right {
       display: flex;
       align-items: center;
@@ -156,8 +140,7 @@
       background-color: #fcff50;
       color: #000;
     }
-
-    /* NOTIFICATION BELL AND DROPDOWN */
+    /* Notification bell */
     .notification-section {
       position: relative;
       cursor: pointer;
@@ -175,7 +158,7 @@
       color: #333;
       border-radius: 8px;
       padding: 10px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
       display: none;
       min-width: 250px;
       min-height: 250px;
@@ -184,8 +167,7 @@
     .notification-dropdown.show {
       display: block;
     }
-
-    /* PROFILE MENU */
+    /* Profile menu */
     .profile-menu {
       position: relative;
       display: flex;
@@ -208,7 +190,7 @@
       color: #333;
       border-radius: 8px;
       padding: 10px 0;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
       display: none;
       min-width: 150px;
       z-index: 2002;
@@ -231,152 +213,63 @@
       background: #f0f0f0;
     }
 
-    /* MESSAGES WRAPPER */
-    .messages-container {
-      max-width: 800px; 
-      margin: 20px auto; 
-      text-align: center;
-    }
-    .messages-container p {
-      margin: 5px 0;
-    }
-
-    /* MAIN WRAPPER */
+    /* MAIN */
     .main-content {
-      padding-top: 80px;
-      min-height: 100vh;
-      max-width: 100%;
-      margin: 0 auto;
-      position: relative;
+      margin-top: 70px;
+      padding: 20px;
+      max-width: 1000px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* SEARCH RESULT PAGE ELEMENTS */
+    .search-header {
+      margin-bottom: 20px;
       text-align: center;
     }
-
-    /* HERO SECTION */
-    .hero-section {
-      margin: 0 auto;
-      padding: 40px 20px;
-      max-width: 800px;
-    }
-    .hero-title {
-      font-size: 2.5em;
+    .search-header h2 {
+      font-size: 2.2em;
       color: #fcff50;
-      font-weight: bold;
-      margin-bottom: 10px;
+      margin: 0 0 10px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
-    .hero-subtitle {
-      font-size: 1em;
-      color: #ffffff;
-      max-width: 600px;
-      margin: 0 auto 30px;
-      line-height: 1.5;
-    }
-
-    /* THREADS WRAPPER AND CREATE THREAD FORM */
-    .threads-section {
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 20px;
-      text-align: left;
-    }
-    .create-thread-form {
-      background: rgba(255,255,255,0.1);
-      padding: 15px;
-      border-radius: 6px;
-      margin-bottom: 20px;
-    }
-    .create-thread-form label {
-      display: block;
-      margin-top: 10px;
-      margin-bottom: 5px;
-      font-weight: bold;
-    }
-    .create-thread-form input[type="text"],
-    .create-thread-form textarea {
-      width: 100%;
-      margin-bottom: 10px;
-      padding: 8px;
+    .search-header p {
       font-size: 0.9em;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      color: #333;
+      opacity: 0.8;
     }
-    .create-thread-btn {
-      background: #fcff50;
-      color: #000;
-      border: none;
-      padding: 8px 16px;
-      cursor: pointer;
-      font-size: 0.85em;
-    }
-
-    .threads-list {
-      margin-top: 20px;
-    }
-    .thread-item {
-      background: rgba(255,255,255,0.1);
-      padding: 15px;
-      border-radius: 6px;
-      margin-bottom: 10px;
-    }
-    .thread-item h4 {
-      margin: 0 0 5px;
+    .section-heading {
+      font-size: 1.4em;
       color: #fcff50;
-      font-size: 1em;
+      margin: 40px 0 20px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
-    .thread-item p {
-      margin: 0 0 5px;
-      font-size: 0.9em;
-      color: #ccc;
+    .search-result {
+      background: rgba(0, 0, 0, 0.5);
+      border: 1px solid #fcff50;
+      border-radius: 6px;
+      padding: 15px;
+      margin-bottom: 15px;
     }
-    .thread-item small {
-      font-size: 0.75em;
-      color: #999;
-    }
-
-    /* COMMENTS SECTION */
-    .comment-item {
-      background: rgba(255,255,255,0.05);
-      padding: 10px;
-      margin-top: 5px;
-      border-radius: 4px;
-    }
-    .comment-item p {
+    .search-result .title {
       margin: 0;
-      font-size: 0.9em;
-      color: #ccc;
+      font-size: 1.2em;
+      color: #fcff50;
+      text-decoration: none;
     }
-    .comment-item small {
-      color: #aaa;
-      font-size: 0.8em;
-    }
-    .add-comment-form {
-      margin-top: 10px;
-    }
-    .add-comment-form textarea {
-      width: 100%;
-      margin-bottom: 5px;
-      padding: 8px;
-      font-size: 0.9em;
-      border-radius: 4px;
-      border: 1px solid #ccc;
-      color: #333;
-    }
-    .comment-btn {
-      background: #fcff50;
-      color: #000;
-      border: none;
-      padding: 6px 12px;
-      font-size: 0.8em;
-      cursor: pointer;
+    .search-result .description {
+      margin: 10px 0 0;
+      font-size: 0.95em;
+      line-height: 1.4;
+      color: #f0f0f0;
     }
   </style>
 </head>
 <body>
-  <div class="overlay"></div>
-
-  <!-- NAVBAR -->
+  <!-- FULL NAVBAR -->
   <nav class="navbar">
-    <!-- Middle: Type and Interests & Search in one form -->
+    <!-- SEARCH AND FILTER FORM -->
     <form method="GET" action="{% url 'search' %}" class="search-form">
       <div class="filter-dropdowns">
         <!-- TYPE DROPDOWN -->
@@ -393,7 +286,6 @@
         <div class="filter-dropdown" id="interestsDropdown">
           <button type="button" class="dropdown-btn">Interests</button>
           <div class="dropdown-content" id="interestsDropdownContent">
-            <!-- name="interests" for each checkbox -->
             <label><input type="checkbox" name="interests" value="Music"> Music</label>
             <label><input type="checkbox" name="interests" value="Sports"> Sports</label>
             <label><input type="checkbox" name="interests" value="Coding"> Coding</label>
@@ -428,20 +320,10 @@
       </div>
       <!-- SEARCH BAR -->
       <div class="search-container">
-        <img
-          src="{% static 'images/magnifying-glass.svg' %}"
-          alt="Search"
-          class="search-icon"
-        />
-        <input
-          type="text"
-          name="q"
-          class="search-input"
-          placeholder="Search..."
-          aria-label="Search"
-        />
+        <img src="{% static 'images/magnifying-glass.svg' %}" alt="Search" class="search-icon"/>
+        <input type="text" name="q" class="search-input" placeholder="Search..." aria-label="Search"/>
       </div>
-      <!-- Search button -->
+      <!-- SEARCH BUTTON -->
       <button type="submit" class="search-submit">Search</button>
     </form>
 
@@ -452,25 +334,17 @@
         <button type="submit">About</button>
       </form>
 
-      <!-- Notification icon -->
+      <!-- NOTIFICATION BELL -->
       <div class="notification-section" id="notificationSection">
-        <img 
-          src="{% static 'images/notification.svg' %}" 
-          alt="Notifications" 
-          class="notification-icon" 
-        />
+        <img src="{% static 'images/notification.svg' %}" alt="Notifications" class="notification-icon"/>
         <div class="notification-dropdown" id="notificationDropdown">
           <p>No notifications yet</p>
         </div>
       </div>
 
-      <!-- Profile menu -->
+      <!-- PROFILE MENU -->
       <div class="profile-menu" id="profileMenu">
-        <img 
-          src="{% static 'images/default-profile-picture.jpg' %}"
-          alt="Profile Picture"
-          class="profile-pic"
-        />
+        <img src="{% static 'images/default-profile-picture.jpg' %}" alt="Profile Picture" class="profile-pic"/>
         <span>{{ registered_users.username }}</span> &#x25BC;
         <div class="dropdown-menu" id="dropdownMenu">
           <!-- Home -->
@@ -497,163 +371,86 @@
     </div>
   </nav>
 
-  <!-- MESSAGES SECTION -->
-  {% if messages %}
-    <div class="messages-container">
-      {% for message in messages %}
-        <p>{{ message }}</p>
-      {% endfor %}
-    </div>
-  {% endif %}
-
   <!-- MAIN -->
   <div class="main-content">
-    <section class="hero-section">
-      <h1 class="hero-title">{{ community.title }} Community</h1>
-      {% if community.description %}
-        <p class="hero-subtitle">{{ community.description }}</p>
+    <!-- Header with query/filter info -->
+    <div class="search-header">
+      <h2>Search Results</h2>
+      {% if query %}
+        <p>Showing results for “<strong>{{ query }}</strong>”</p>
       {% endif %}
-    </section>
+    </div>
 
-    <!-- THREADS SECTION -->
-    <section class="threads-section">
-      {% if is_member %}
-        <div class="create-thread-form">
-          <form method="POST" action="{% url 'create_thread' community.id %}">
-            {% csrf_token %}
-            <label>Thread Title</label>
-            <input type="text" name="thread_title" required/>
-
-            <label>Content</label>
-            <textarea name="thread_content" rows="3"></textarea>
-
-            <button type="submit" class="create-thread-btn">Create Thread</button>
-          </form>
+    {# Communities Section #}
+    {% if communities %}
+      <h3 class="section-heading">Communities</h3>
+      {% for com in communities %}
+        <div class="search-result">
+          <h4 class="title">{{ com.title }}</h4>
+          <p class="description">{{ com.description }}</p>
         </div>
-      {% else %}
-        <p style="text-align:center;">You must join this community to create threads.</p>
-      {% endif %}
+      {% endfor %}
+    {% endif %}
 
-      <div class="threads-list">
-        <h3>Threads</h3>
-        {% if threads %}
-          {% for t in threads %}
-            <div class="thread-item">
-              <h4>{{ t.title }}</h4>
-              <p>{{ t.content }}</p>
-              <small>
-                Created by:
-                {% if t.created_by %}
-                  {{ t.created_by.username }}
-                {% else %}
-                  Unknown
-                {% endif %}
-                on {{ t.date_created|date:"Y-m-d H:i" }}
-              </small>
+    {# Events Section #}
+    {% if events %}
+      <h3 class="section-heading">Events</h3>
+      {% for ev in events %}
+        <div class="search-result">
+          <h4 class="title">{{ ev.title }}</h4>
+          <p class="description">{{ ev.description }}</p>
+        </div>
+      {% endfor %}
+    {% endif %}
 
-              {% if t.comments.all %}
-                <div style="margin-top:10px;">
-                  <strong>Comments:</strong>
-                  {% for c in t.comments.all %}
-                    <div class="comment-item">
-                      <p>{{ c.content }}</p>
-                      <small>
-                        By:
-                        {% if c.created_by %}
-                          {{ c.created_by.username }}
-                        {% else %}
-                          Unknown
-                        {% endif %}
-                        on {{ c.date_created|date:"Y-m-d H:i" }}
-                      </small>
-                    </div>
-                  {% empty %}
-                    <p>No comments yet. Be the first to reply!</p>
-                  {% endfor %}
-                </div>
-              {% endif %}
-
-              {% if is_member %}
-                <form
-                  method="POST"
-                  action="{% url 'create_comment' community.id t.id %}"
-                  class="add-comment-form"
-                >
-                  {% csrf_token %}
-                  <textarea
-                    name="comment_content"
-                    rows="2"
-                    placeholder="Write a comment..."
-                  ></textarea>
-                  <button type="submit" class="comment-btn">Comment</button>
-                </form>
-              {% else %}
-                <p style="font-size:0.85em; color:#bbb;">
-                  Join this community to comment on threads.
-                </p>
-              {% endif %}
-            </div>
-          {% endfor %}
-        {% else %}
-          <p>No threads yet. Be the first to create one!</p>
-        {% endif %}
-      </div>
-    </section>
+    {# If no results found #}
+    {% if not communities and not events %}
+      <p>No results found.</p>
+    {% endif %}
   </div>
 
   <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      // Toggle a dropdown by adding/removing the 'show' class
+    document.addEventListener('DOMContentLoaded', function() {
+      // Toggle dropdown visibility
       function toggleDropdown(dropdownContent) {
         dropdownContent.classList.toggle('show');
       }
-
-      // Close all open dropdowns (including notifications) except the one passed as 'except'
+      // Close all dropdowns except specified
       function closeAllDropdowns(except) {
-        const allDropdowns = document.querySelectorAll(
-          '.dropdown-content.show, .notification-dropdown.show, .dropdown-menu.show'
-        );
+        const allDropdowns = document.querySelectorAll('.dropdown-content.show, .notification-dropdown.show, .dropdown-menu.show');
         allDropdowns.forEach(dd => {
           if (dd !== except) dd.classList.remove('show');
         });
       }
 
-      // PROFILE MENU
+      // PROFILE MENU DROPDOWN
       const profileMenu = document.getElementById('profileMenu');
       const dropdownMenu = document.getElementById('dropdownMenu');
-      profileMenu.addEventListener('click', function (e) {
-        if (e.target.tagName.toLowerCase() === 'form' || e.target.closest('form')) {
-          return;
-        }
+      profileMenu.addEventListener('click', function(e) {
+        if (e.target.tagName.toLowerCase() === 'form' || e.target.closest('form')) return;
         closeAllDropdowns(dropdownMenu);
         dropdownMenu.classList.toggle('show');
         e.stopPropagation();
       });
 
-      // NOTIFICATION ICON
+      // NOTIFICATION BELL DROPDOWN
       const notificationSection = document.getElementById('notificationSection');
       const notificationDropdown = document.getElementById('notificationDropdown');
-      notificationSection.addEventListener('click', function (e) {
+      notificationSection.addEventListener('click', function(e) {
         closeAllDropdowns(notificationDropdown);
         notificationDropdown.classList.toggle('show');
         e.stopPropagation();
       });
 
       document.addEventListener('click', function(e) {
-        // If outside profile menu or notification bell, hide their dropdowns
-        if (!profileMenu.contains(e.target)) {
-          dropdownMenu.classList.remove('show');
-        }
-        if (!notificationSection.contains(e.target)) {
-          notificationDropdown.classList.remove('show');
-        }
+        if (!profileMenu.contains(e.target)) dropdownMenu.classList.remove('show');
+        if (!notificationSection.contains(e.target)) notificationDropdown.classList.remove('show');
       });
 
       // TYPE DROPDOWN
       const typeBtn = document.getElementById('typeBtn');
       const typeDropdownContent = document.getElementById('typeDropdownContent');
       const typeInput = document.getElementById('typeInput');
-
       if (typeBtn) {
         typeBtn.addEventListener('click', function(e) {
           closeAllDropdowns(typeDropdownContent);
@@ -681,12 +478,12 @@
         });
       }
 
-      // CLICK OUTSIDE ANY OTHER DROPDOWN
+      // Close dropdowns if clicking outside type/interests dropdown
       document.addEventListener('click', function(e) {
-        if (typeDropdownContent && !typeDropdownContent.contains(e.target) && e.target !== typeBtn) {
+        if (!typeBtn.contains(e.target)) {
           typeDropdownContent.classList.remove('show');
         }
-        if (interestsDropdown && !interestsDropdown.contains(e.target)) {
+        if (!interestsDropdown.contains(e.target)) {
           interestsDropdownContent.classList.remove('show');
         }
       });

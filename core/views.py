@@ -4,6 +4,8 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from datetime import datetime
 from .models import RegisteredUser, Community, CommunityMembership, Thread, Event
+from django.db.models import Q
+
 
 def home(request):
     if 'registered_user_id' in request.session:
@@ -28,6 +30,11 @@ def forgot_password(request):
 
 def forgot_password_sent(request):
     return render(request, 'forgot-password-sent.html')
+
+
+def data_protection(request):
+    is_logged_in = 'registered_user_id' in request.session
+    return render(request, 'data-protection.html', {'is_logged_in': is_logged_in})
 
 
 def login_view(request):
@@ -164,7 +171,7 @@ def profile_settings(request):
             return redirect('login')
         
         return render(request, 'profile-settings.html', {'registered_users': ruser})
-    return render(request, 'index.html')
+    return redirect('home')
 
 
 def update_profile(request):
@@ -219,7 +226,7 @@ def update_profile(request):
         messages.success(request, "Profile updated successfully.")
         return redirect('profile-settings')
 
-    # If not POST, just go back to profile-settings (or wherever)
+    # If not POST, just go back to profile-settings
     return redirect('profile-settings')
 
 
@@ -285,7 +292,7 @@ def create_community(request):
             messages.error(request, "Title is required.")
             return redirect('communities')
 
-        # Create & save new community
+        # Create and save new community
         new_community = Community.objects.create(
             title=title,
             description=description,
@@ -613,3 +620,67 @@ def leave_event(request, event_id):
     else:
         messages.error(request, "You are not registered for this event.")
     return redirect('events')
+
+
+def search_results(request):
+    return render(request, 'search-results.html')
+
+
+def search_view(request):
+    # 1) Check if user is logged in, and try to fetch the RegisteredUser
+    ruser = None
+    if 'registered_user_id' in request.session:
+        ruser_id = request.session['registered_user_id']
+        try:
+            ruser = RegisteredUser.objects.get(pk=ruser_id, is_active=True)
+        except RegisteredUser.DoesNotExist:
+            request.session.flush()
+            ruser = None
+
+    query = request.GET.get('q', '').strip()  # The user’s search text
+    filter_type = request.GET.get('type', 'All')  # "All", "Events", or "Communities"
+    selected_interests = request.GET.getlist('interests', [])  # interest checkboxes
+
+    communities = []
+    events = []
+
+    # If user typed something, we build Q objects for the title/description
+    q_obj = Q()
+    if query:
+        q_obj = Q(title__icontains=query) | Q(description__icontains=query) | Q(tags__icontains=query)
+
+    # Build a separate Q for interests
+    interests_q = Q()
+    for interest in selected_interests:
+        # Each interest can match the tags
+        interests_q |= Q(tags__icontains=interest)
+
+    if selected_interests:
+        final_comm_q = q_obj & interests_q if query else interests_q
+    else:
+        # If no interests, just use the text Q
+        final_comm_q = q_obj
+
+    # Similarly for events
+    if selected_interests:
+        final_ev_q = q_obj & interests_q if query else interests_q
+    else:
+        final_ev_q = q_obj
+
+    # Now I apply them depending on filter_type
+    if filter_type == 'Communities':
+        communities = Community.objects.filter(final_comm_q).distinct()
+    elif filter_type == 'Events':
+        events = Event.objects.filter(final_ev_q).distinct()
+    else:
+        communities = Community.objects.filter(final_comm_q).distinct()
+        events = Event.objects.filter(final_ev_q).distinct()
+
+    return render(request, 'search-results.html', {
+        'registered_users': ruser,
+        'query': query,
+        'filter_type': filter_type,
+        'selected_interests': selected_interests,
+        'communities': communities,
+        'events': events,
+    })

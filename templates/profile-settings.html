@@ -23,6 +23,7 @@
       background: rgba(0, 0, 0, 0.7);
       z-index: -1;
     }
+
     /* NAVBAR */
     .navbar {
       position: fixed;
@@ -36,13 +37,16 @@
       box-sizing: border-box;
       z-index: 1000;
     }
-    /* NAV-CENTER: filter dropdowns + search */
-    .nav-center {
+
+    /* SEARCH FORM (includes type and interests filter and search input and search button) */
+    .search-form {
       display: flex;
       align-items: center;
       gap: 20px;
       margin: 0 auto;
     }
+
+    /* FILTER DROPDOWNS */
     .filter-dropdowns {
       display: flex;
       align-items: center;
@@ -91,6 +95,8 @@
     .dropdown-content label:hover {
       background: #f0f0f0;
     }
+
+    /* SEARCH CONTAINER */
     .search-container {
       display: flex;
       align-items: center;
@@ -112,7 +118,24 @@
       font-size: 0.8em;
       width: 180px;
     }
-    /* NAV-RIGHT (profile menu) */
+
+    /* SEARCH BUTTON */
+    .search-submit {
+      background-color: #fcff50;
+      border: 1px solid #fcff50;
+      color: #000;
+      padding: 8px 15px;
+      cursor: pointer;
+      font-size: 0.8em;
+      border-radius: 20px;
+      transition: background-color 0.3s ease;
+    }
+    .search-submit:hover {
+      background-color: #fcff50;
+      color: #000;
+    }
+
+    /* NAV-RIGHT */
     .nav-right {
       display: flex;
       align-items: center;
@@ -127,10 +150,40 @@
       font-size: 0.8em;
       transition: background-color 0.3s ease, color 0.3s ease;
     }
-    .nav-right > button:hover {
+    .nav-right button:hover {
       background-color: #fcff50;
       color: #000;
     }
+
+    /* NOTIFICATION BELL AND DROPDOWN */
+    .notification-section {
+      position: relative;
+      cursor: pointer;
+    }
+    .notification-icon {
+      width: 24px;
+      height: 24px;
+      display: block;
+    }
+    .notification-dropdown {
+      position: absolute;
+      top: 220%;
+      right: 0;
+      background: #fff;
+      color: #333;
+      border-radius: 8px;
+      padding: 10px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+      display: none;
+      min-width: 250px;
+      min-height: 250px;
+      z-index: 2002;
+    }
+    .notification-dropdown.show {
+      display: block;
+    }
+
+    /* PROFILE MENU */
     .profile-menu {
       position: relative;
       display: flex;
@@ -177,7 +230,8 @@
     .dropdown-menu button:hover {
       background: #f0f0f0;
     }
-    /* MAIN CONTENT */
+
+    /* MAIN */
     .main-content {
       position: relative;
       padding-top: 90px;
@@ -224,8 +278,7 @@
       font-size: 0.9em;
       font-weight: bold;
     }
-    .profile-form input,
-    .profile-form textarea {
+    .profile-form input {
       width: 100%;
       padding: 10px;
       margin-bottom: 15px;
@@ -255,6 +308,8 @@
       gap: 10px;
       margin-top: 10px;
     }
+
+    /* MESSAGES */
     .messages-container {
       width: 100%;
       max-width: 600px;
@@ -276,81 +331,146 @@
       margin-bottom: 5px;
       font-size: 0.9em;
     }
+
+    /* Interests Container */
+    .interests-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 15px;
+    }
+    .interest-option {
+      display: inline-block;
+      border: 1px solid #ccc;
+      padding: 8px 12px;
+      cursor: pointer;
+      border-radius: 4px;
+      font-size: 0.9em;
+      background: #f0f0f0;
+      color: #333;
+      transition: background-color 0.3s ease;
+    }
+    .interest-option:hover {
+      background-color: #fcff50;
+      color: #000;
+    }
+    .interest-option.selected {
+      background-color: #fcff50;
+      color: #000;
+      border: 1px solid #fcff50;
+    }
   </style>
 </head>
 <body>
   <div class="overlay"></div>
 
+  <!-- NAVBAR with working search form -->
   <nav class="navbar">
-    <!-- NAV-CENTER -->
-    <div class="nav-center">
+    <!-- SEARCH AND FILTERS -->
+    <form method="GET" action="{% url 'search' %}" class="search-form">
+      <!-- Filter Dropdowns -->
       <div class="filter-dropdowns">
+        <!-- Type Dropdown -->
         <div class="filter-dropdown" id="typeDropdown">
-          <button class="dropdown-btn" id="typeBtn">All</button>
+          <!-- Hidden input to store user's chosen type (All/Events/Communities) -->
+          <input type="hidden" name="type" id="typeInput" value="All" />
+          <button type="button" class="dropdown-btn" id="typeBtn">All</button>
           <div class="dropdown-content" id="typeDropdownContent">
-            <button>All</button>
-            <button>Events</button>
-            <button>Communities</button>
+            <button type="button">All</button>
+            <button type="button">Events</button>
+            <button type="button">Communities</button>
           </div>
         </div>
+
+        <!-- Interests dropdown -->
         <div class="filter-dropdown" id="interestsDropdown">
-          <button class="dropdown-btn">Interests</button>
+          <button type="button" class="dropdown-btn">Interests</button>
           <div class="dropdown-content" id="interestsDropdownContent">
-            <label><input type="checkbox"> Music</label>
-            <label><input type="checkbox"> Sports</label>
-            <label><input type="checkbox"> Coding</label>
-            <label><input type="checkbox"> Gaming</label>
-            <label><input type="checkbox"> Travel</label>
-            <label><input type="checkbox"> Art</label>
-            <label><input type="checkbox"> Science</label>
-            <label><input type="checkbox"> Fitness</label>
-            <label><input type="checkbox"> Books</label>
-            <label><input type="checkbox"> Technology</label>
-            <label><input type="checkbox"> Cooking</label>
-            <label><input type="checkbox"> Fashion</label>
-            <label><input type="checkbox"> Photography</label>
-            <label><input type="checkbox"> Animals</label>
-            <label><input type="checkbox"> Writing</label>
-            <label><input type="checkbox"> Crafts</label>
-            <label><input type="checkbox"> Business</label>
-            <label><input type="checkbox"> Education</label>
-            <label><input type="checkbox"> Mindfulness</label>
-            <label><input type="checkbox"> Politics</label>
-            <label><input type="checkbox"> Finance</label>
-            <label><input type="checkbox"> Cars</label>
-            <label><input type="checkbox"> Design</label>
-            <label><input type="checkbox"> Comedy</label>
-            <label><input type="checkbox"> Volunteering</label>
-            <label><input type="checkbox"> History</label>
-            <label><input type="checkbox"> Geography</label>
-            <label><input type="checkbox"> Language</label>
-            <label><input type="checkbox"> Nature</label>
+            <!-- Each chosen interest is appended as name="interests" in GET -->
+            <label><input type="checkbox" name="interests" value="Music"> Music</label>
+            <label><input type="checkbox" name="interests" value="Sports"> Sports</label>
+            <label><input type="checkbox" name="interests" value="Coding"> Coding</label>
+            <label><input type="checkbox" name="interests" value="Gaming"> Gaming</label>
+            <label><input type="checkbox" name="interests" value="Travel"> Travel</label>
+            <label><input type="checkbox" name="interests" value="Art"> Art</label>
+            <label><input type="checkbox" name="interests" value="Science"> Science</label>
+            <label><input type="checkbox" name="interests" value="Fitness"> Fitness</label>
+            <label><input type="checkbox" name="interests" value="Books"> Books</label>
+            <label><input type="checkbox" name="interests" value="Technology"> Technology</label>
+            <label><input type="checkbox" name="interests" value="Cooking"> Cooking</label>
+            <label><input type="checkbox" name="interests" value="Fashion"> Fashion</label>
+            <label><input type="checkbox" name="interests" value="Photography"> Photography</label>
+            <label><input type="checkbox" name="interests" value="Animals"> Animals</label>
+            <label><input type="checkbox" name="interests" value="Writing"> Writing</label>
+            <label><input type="checkbox" name="interests" value="Crafts"> Crafts</label>
+            <label><input type="checkbox" name="interests" value="Business"> Business</label>
+            <label><input type="checkbox" name="interests" value="Education"> Education</label>
+            <label><input type="checkbox" name="interests" value="Mindfulness"> Mindfulness</label>
+            <label><input type="checkbox" name="interests" value="Politics"> Politics</label>
+            <label><input type="checkbox" name="interests" value="Finance"> Finance</label>
+            <label><input type="checkbox" name="interests" value="Cars"> Cars</label>
+            <label><input type="checkbox" name="interests" value="Design"> Design</label>
+            <label><input type="checkbox" name="interests" value="Comedy"> Comedy</label>
+            <label><input type="checkbox" name="interests" value="Volunteering"> Volunteering</label>
+            <label><input type="checkbox" name="interests" value="History"> History</label>
+            <label><input type="checkbox" name="interests" value="Geography"> Geography</label>
+            <label><input type="checkbox" name="interests" value="Language"> Language</label>
+            <label><input type="checkbox" name="interests" value="Nature"> Nature</label>
           </div>
         </div>
       </div>
+
+      <!-- Search Bar -->
       <div class="search-container">
-        <img src="{% static 'images/magnifying-glass.svg' %}" alt="Search" class="search-icon" />
-        <input type="text" class="search-input" placeholder="Search..." aria-label="Search" />
+        <img src="{% static 'images/magnifying-glass.svg' %}" alt="Search" class="search-icon"/>
+        <input type="text" name="q" class="search-input" placeholder="Search..." aria-label="Search"/>
       </div>
-    </div>
+
+      <!-- Actual "Search" button -->
+      <button type="submit" class="search-submit">Search</button>
+    </form>
 
     <!-- NAV-RIGHT -->
     <div class="nav-right">
-      <form method="POST" action="{% url 'about-us' %}" style="margin: 0;">{% csrf_token %}
+      <!-- "About" button -->
+      <form method="POST" action="{% url 'about-us' %}" style="margin: 0;">
+        {% csrf_token %}
         <button type="submit">About</button>
       </form>
+
+      <!-- Notification bell icon -->
+      <div class="notification-section" id="notificationSection">
+        <img 
+          src="{% static 'images/notification.svg' %}"
+          alt="Notifications" 
+          class="notification-icon" 
+        />
+        <div class="notification-dropdown" id="notificationDropdown">
+          <p>No notifications yet</p>
+        </div>
+      </div>
+
+      <!-- Profile dropdown -->
       <div class="profile-menu" id="profileMenu">
-        <img src="{% static 'images/default-profile-picture.jpg' %}" alt="Profile Picture" class="profile-pic" />
+        <img
+          src="{% static 'images/default-profile-picture.jpg' %}"
+          alt="Profile Picture"
+          class="profile-pic"
+        />
         <span>{{ registered_users.username }}</span> &#x25BC;
         <div class="dropdown-menu" id="dropdownMenu">
+          <!-- Home -->
           <form method="GET" action="/" style="margin: 0;">
             <button type="submit">Home</button>
           </form>
+          <!-- My Profile -->
           <form method="POST" action="{% url 'my_profile' %}" style="margin: 0;">
             {% csrf_token %}
             <button type="submit">My Profile</button>
           </form>
+          <!-- Profile Settings -->
           <button>Profile Settings</button>
+          <!-- Logout -->
           <form method="POST" action="{% url 'logout' %}" style="margin: 0;">
             {% csrf_token %}
             <button type="submit">Logout</button>
@@ -360,16 +480,13 @@
     </div>
   </nav>
 
+  <!-- MAIN -->
   <div class="main-content">
     <div class="profile-section">
       {% if messages %}
         <div class="messages-container">
           {% for message in messages %}
-            <div 
-              {% if message.tags %} 
-                  class="{{ message.tags }}" 
-              {% endif %}
-            >
+            <div {% if message.tags %}class="{{ message.tags }}"{% endif %}>
               {{ message }}
             </div>
           {% endfor %}
@@ -380,33 +497,107 @@
       <div class="profile-card">
         <h2>Update Your Information</h2>
         
+        <!-- MAIN PROFILE UPDATE FORM -->
         <form class="profile-form" method="POST" action="{% url 'update_profile' %}">
           {% csrf_token %}
-
           <label for="username">Username</label>
-          <input type="text" id="username" name="username" value="{{ registered_users.username }}" placeholder="Enter your username">
+          <input
+            type="text"
+            id="username"
+            name="username"
+            value="{{ registered_users.username }}"
+            placeholder="Enter your username"
+          />
 
           <label for="name">Name</label>
-          <input type="text" id="name" name="name" value="{{ registered_users.name }}" placeholder="Your name">
+          <input
+            type="text"
+            id="name"
+            name="name"
+            value="{{ registered_users.name }}"
+            placeholder="Your name"
+          />
 
           <label for="email">Email</label>
-          <input type="email" id="email" name="email" value="{{ registered_users.email }}" placeholder="john@example.com">
+          <input
+            type="email"
+            id="email"
+            name="email"
+            value="{{ registered_users.email }}"
+            placeholder="john@example.com"
+          />
 
           <label for="password">Password</label>
-          <input type="password" id="password" name="password" placeholder="Enter new password (only if changing)">
+          <input
+            type="password"
+            id="password"
+            name="password"
+            placeholder="Enter new password (only if changing)"
+          />
 
           <label for="course">Course</label>
-          <input type="text" id="course" name="course" value="{{ registered_users.course }}" placeholder="Computer Science">
+          <input
+            type="text"
+            id="course"
+            name="course"
+            value="{{ registered_users.course }}"
+            placeholder="Computer Science"
+          />
 
           <label for="course_date">Course Start Date</label>
-          <input type="date" id="course_date" name="course_date" value="{{ registered_users.start_date|date:'Y-m-d' }}">
+          <input
+            type="date"
+            id="course_date"
+            name="course_date"
+            value="{{ registered_users.start_date|date:'Y-m-d' }}"
+          />
 
-          <label for="interests">Interests</label>
-          <textarea id="interests" name="interests" placeholder="music, sports, coding, etc." rows="3">{{ registered_users.interests }}</textarea>
+          <!-- Clickable Interests Section -->
+          <label for="interestsInput">Interests</label>
+          <div class="interests-container">
+            <div class="interest-option" data-value="music">Music</div>
+            <div class="interest-option" data-value="sports">Sports</div>
+            <div class="interest-option" data-value="coding">Coding</div>
+            <div class="interest-option" data-value="gaming">Gaming</div>
+            <div class="interest-option" data-value="travel">Travel</div>
+            <div class="interest-option" data-value="art">Art</div>
+            <div class="interest-option" data-value="science">Science</div>
+            <div class="interest-option" data-value="fitness">Fitness</div>
+            <div class="interest-option" data-value="books">Books</div>
+            <div class="interest-option" data-value="technology">Technology</div>
+            <div class="interest-option" data-value="cooking">Cooking</div>
+            <div class="interest-option" data-value="fashion">Fashion</div>
+            <div class="interest-option" data-value="photography">Photography</div>
+            <div class="interest-option" data-value="animals">Animals</div>
+            <div class="interest-option" data-value="writing">Writing</div>
+            <div class="interest-option" data-value="crafts">Crafts</div>
+            <div class="interest-option" data-value="business">Business</div>
+            <div class="interest-option" data-value="education">Education</div>
+            <div class="interest-option" data-value="mindfulness">Mindfulness</div>
+            <div class="interest-option" data-value="politics">Politics</div>
+            <div class="interest-option" data-value="finance">Finance</div>
+            <div class="interest-option" data-value="cars">Cars</div>
+            <div class="interest-option" data-value="design">Design</div>
+            <div class="interest-option" data-value="comedy">Comedy</div>
+            <div class="interest-option" data-value="volunteering">Volunteering</div>
+            <div class="interest-option" data-value="history">History</div>
+            <div class="interest-option" data-value="geography">Geography</div>
+            <div class="interest-option" data-value="language">Language</div>
+            <div class="interest-option" data-value="nature">Nature</div>
+          </div>
+          <input
+            type="hidden"
+            id="interestsInput"
+            name="interests"
+            value="{{ registered_users.interests }}"
+          />
 
           <div class="action-buttons">
             <button type="submit">Update Profile</button>
-            <button type="button">Data Protection Statement</button>
+            <!-- Data Protection Statement -->
+            <a href="{% url 'data-protection' %}" style="text-decoration: none;">
+              <button type="button">Data Protection Statement</button>
+            </a>
             <button type="button">Request Data</button>
           </div>
         </form>
@@ -415,56 +606,114 @@
   </div>
 
   <script>
+    // Toggle a dropdown by adding/removing the 'show' class
+    function toggleDropdown(dropdownContent) {
+      dropdownContent.classList.toggle('show');
+    }
+
+    // Close all open dropdowns except the one passed as 'except'
+    function closeAllDropdowns(except) {
+      const allDropdowns = document.querySelectorAll(
+        '.dropdown-content.show, .notification-dropdown.show, .dropdown-menu.show'
+      );
+      allDropdowns.forEach((dd) => {
+        if (dd !== except) dd.classList.remove('show');
+      });
+    }
+
     document.addEventListener('DOMContentLoaded', function () {
+      /* Profile menu and dropdown */
       const profileMenu = document.getElementById('profileMenu');
       const dropdownMenu = document.getElementById('dropdownMenu');
-
       profileMenu.addEventListener('click', function (e) {
         if (e.target.tagName.toLowerCase() === 'form' || e.target.closest('form')) return;
+        closeAllDropdowns(dropdownMenu);
         dropdownMenu.classList.toggle('show');
+        e.stopPropagation();
       });
 
+      /* Notification bell */
+      const notificationSection = document.getElementById('notificationSection');
+      const notificationDropdown = document.getElementById('notificationDropdown');
+      notificationSection.addEventListener('click', function (e) {
+        closeAllDropdowns(notificationDropdown);
+        notificationDropdown.classList.toggle('show');
+        e.stopPropagation();
+      });
+
+      /* Type dropdown */
+      const typeBtn = document.getElementById('typeBtn');
+      const typeDropdownContent = document.getElementById('typeDropdownContent');
+      const typeInput = document.getElementById('typeInput');
+      if (typeBtn) {
+        typeBtn.addEventListener('click', function (e) {
+          closeAllDropdowns(typeDropdownContent);
+          toggleDropdown(typeDropdownContent);
+          e.stopPropagation();
+        });
+      }
+      if (typeDropdownContent) {
+        typeDropdownContent.addEventListener('click', function (e) {
+          if (e.target.tagName.toLowerCase() === 'button') {
+            typeBtn.textContent = e.target.textContent;
+            typeInput.value = e.target.textContent;
+          }
+        });
+      }
+
+      /* Interests dropdown */
+      const interestsDropdown = document.getElementById('interestsDropdown');
+      const interestsDropdownContent = document.getElementById('interestsDropdownContent');
+      if (interestsDropdown) {
+        interestsDropdown
+          .querySelector('.dropdown-btn')
+          .addEventListener('click', function (e) {
+            closeAllDropdowns(interestsDropdownContent);
+            toggleDropdown(interestsDropdownContent);
+            e.stopPropagation();
+          });
+      }
+
+      // Close any open dropdown if the user clicks outside
       document.addEventListener('click', function (event) {
         if (!profileMenu.contains(event.target)) {
           dropdownMenu.classList.remove('show');
         }
-      });
-
-      // Toggle dropdowns in nav-center
-      function toggleDropdown(dropdownContent) {
-        dropdownContent.classList.toggle('show');
-      }
-      function closeAllDropdowns(except) {
-        const allDropdowns = document.querySelectorAll('.dropdown-content.show');
-        allDropdowns.forEach((dd) => {
-          if (dd !== except) {
-            dd.classList.remove('show');
-          }
-        });
-      }
-      const typeBtn = document.getElementById('typeBtn');
-      const typeDropdownContent = document.getElementById('typeDropdownContent');
-      typeBtn.addEventListener('click', function (e) {
-        closeAllDropdowns(typeDropdownContent);
-        toggleDropdown(typeDropdownContent);
-        e.stopPropagation();
-      });
-      typeDropdownContent.addEventListener('click', function (e) {
-        if (e.target.tagName.toLowerCase() === 'button') {
-          typeBtn.textContent = e.target.textContent;
+        if (!notificationSection.contains(event.target)) {
+          notificationDropdown.classList.remove('show');
+        }
+        if (typeDropdownContent && !typeDropdownContent.contains(event.target) && event.target !== typeBtn) {
+          typeDropdownContent.classList.remove('show');
+        }
+        if (interestsDropdown && !interestsDropdown.contains(event.target)) {
+          interestsDropdownContent.classList.remove('show');
         }
       });
-      const interestsDropdown = document.getElementById('interestsDropdown');
-      const interestsDropdownContent = document.getElementById('interestsDropdownContent');
-      interestsDropdown.querySelector('.dropdown-btn').addEventListener('click', function (e) {
-        closeAllDropdowns(interestsDropdownContent);
-        toggleDropdown(interestsDropdownContent);
-        e.stopPropagation();
-      });
-      document.addEventListener('click', function (event) {
-        if (!profileMenu.contains(event.target)) dropdownMenu.classList.remove('show');
-        if (!typeDropdown.contains(event.target)) typeDropdownContent.classList.remove('show');
-        if (!interestsDropdown.contains(event.target)) interestsDropdownContent.classList.remove('show');
+
+      /* CLICKABLE INTERESTS */
+      const interestOptions = document.querySelectorAll('.interest-option');
+      const interestsInput = document.getElementById('interestsInput');
+
+      let selectedInterests = [];
+      if (interestsInput.value.trim()) {
+        selectedInterests = interestsInput.value.toLowerCase().split(',').map(i => i.trim());
+      }
+      // Mark any existing interests
+      interestOptions.forEach(option => {
+        const value = option.getAttribute('data-value');
+        if (selectedInterests.includes(value)) {
+          option.classList.add('selected');
+        }
+        option.addEventListener('click', function() {
+          if (option.classList.contains('selected')) {
+            option.classList.remove('selected');
+            selectedInterests = selectedInterests.filter(item => item !== value);
+          } else {
+            option.classList.add('selected');
+            selectedInterests.push(value);
+          }
+          interestsInput.value = selectedInterests.join(',');
+        });
       });
     });
   </script>

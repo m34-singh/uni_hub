@@ -38,7 +38,8 @@
       z-index: 1000;
     }
 
-    .nav-center {
+    /* NAV-CENTRE FORM */
+    .search-form {
       display: flex;
       align-items: center;
       gap: 20px;
@@ -78,7 +79,7 @@
 
     .dropdown-btn {
       border-radius: 20px;
-      background-color: #00000000;
+      background-color: transparent;
       border: 1px solid #fcff50;
       color: #ffffff;
       padding: 8px 12px;
@@ -143,6 +144,50 @@
       color: #fcff50;
       font-size: 0.8em;
       width: 180px;
+    }
+
+    .search-submit {
+      background-color: #fcff50;
+      border: 1px solid #fcff50;
+      color: #000;
+      padding: 8px 15px;
+      cursor: pointer;
+      font-size: 0.8em;
+      border-radius: 20px;
+      transition: background-color 0.3s ease;
+    }
+
+    .search-submit:hover {
+      background-color: #fcff50;
+      color: #000;
+    }
+
+    /* NOTIFICATION BELL AND DROPDOWN */
+    .notification-section {
+      position: relative;
+      cursor: pointer;
+    }
+    .notification-icon {
+      width: 24px;
+      height: 24px;
+      display: block;
+    }
+    .notification-dropdown {
+      position: absolute;
+      top: 220%;
+      right: 0;
+      background: #fff;
+      color: #333;
+      border-radius: 8px;
+      padding: 10px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+      display: none;
+      min-width: 250px;
+      min-height: 250px;
+      z-index: 2002;
+    }
+    .notification-dropdown.show {
+      display: block;
     }
 
     .profile-menu {
@@ -227,7 +272,6 @@
       max-width: 600px;
       margin: 0 auto 30px auto;
       line-height: 1.5;
-      opacity: 0.9;
     }
 
     .hero-buttons {
@@ -305,51 +349,54 @@
   <div class="overlay"></div>
 
   <nav class="navbar">
-    <div class="nav-center">
-      <!-- Type filter dropdown (e.g., All, Events, Communities) -->
+    <!-- SEARCH AND FILTER FORM -->
+    <form method="GET" action="{% url 'search' %}" class="search-form">
+      <!-- Filter Dropdowns -->
       <div class="filter-dropdowns">
+        <!-- Type Dropdown -->
         <div class="filter-dropdown" id="typeDropdown">
-          <button class="dropdown-btn" id="typeBtn">All</button>
+          <input type="hidden" name="type" id="typeInput" value="All" />
+          <button type="button" class="dropdown-btn" id="typeBtn">All</button>
           <div class="dropdown-content" id="typeDropdownContent">
-            <button>All</button>
-            <button>Events</button>
-            <button>Communities</button>
+            <button type="button">All</button>
+            <button type="button">Events</button>
+            <button type="button">Communities</button>
           </div>
         </div>
 
-        <!-- Interests filter dropdown with checkboxes -->
+        <!-- Interests dropdown (checkboxes). Each must have name="interests" to be submitted. -->
         <div class="filter-dropdown" id="interestsDropdown">
-          <button class="dropdown-btn">Interests</button>
+          <button type="button" class="dropdown-btn">Interests</button>
           <div class="dropdown-content" id="interestsDropdownContent">
-            <label><input type="checkbox"> Music</label>
-            <label><input type="checkbox"> Sports</label>
-            <label><input type="checkbox"> Coding</label>
-            <label><input type="checkbox"> Gaming</label>
-            <label><input type="checkbox"> Travel</label>
-            <label><input type="checkbox"> Art</label>
-            <label><input type="checkbox"> Science</label>
-            <label><input type="checkbox"> Fitness</label>
-            <label><input type="checkbox"> Books</label>
-            <label><input type="checkbox"> Technology</label>
-            <label><input type="checkbox"> Cooking</label>
-            <label><input type="checkbox"> Fashion</label>
-            <label><input type="checkbox"> Photography</label>
-            <label><input type="checkbox"> Animals</label>
-            <label><input type="checkbox"> Writing</label>
-            <label><input type="checkbox"> Crafts</label>
-            <label><input type="checkbox"> Business</label>
-            <label><input type="checkbox"> Education</label>
-            <label><input type="checkbox"> Mindfulness</label>
-            <label><input type="checkbox"> Politics</label>
-            <label><input type="checkbox"> Finance</label>
-            <label><input type="checkbox"> Cars</label>
-            <label><input type="checkbox"> Design</label>
-            <label><input type="checkbox"> Comedy</label>
-            <label><input type="checkbox"> Volunteering</label>
-            <label><input type="checkbox"> History</label>
-            <label><input type="checkbox"> Geography</label>
-            <label><input type="checkbox"> Language</label>
-            <label><input type="checkbox"> Nature</label>
+            <label><input type="checkbox" name="interests" value="Music"> Music</label>
+            <label><input type="checkbox" name="interests" value="Sports"> Sports</label>
+            <label><input type="checkbox" name="interests" value="Coding"> Coding</label>
+            <label><input type="checkbox" name="interests" value="Gaming"> Gaming</label>
+            <label><input type="checkbox" name="interests" value="Travel"> Travel</label>
+            <label><input type="checkbox" name="interests" value="Art"> Art</label>
+            <label><input type="checkbox" name="interests" value="Science"> Science</label>
+            <label><input type="checkbox" name="interests" value="Fitness"> Fitness</label>
+            <label><input type="checkbox" name="interests" value="Books"> Books</label>
+            <label><input type="checkbox" name="interests" value="Technology"> Technology</label>
+            <label><input type="checkbox" name="interests" value="Cooking"> Cooking</label>
+            <label><input type="checkbox" name="interests" value="Fashion"> Fashion</label>
+            <label><input type="checkbox" name="interests" value="Photography"> Photography</label>
+            <label><input type="checkbox" name="interests" value="Animals"> Animals</label>
+            <label><input type="checkbox" name="interests" value="Writing"> Writing</label>
+            <label><input type="checkbox" name="interests" value="Crafts"> Crafts</label>
+            <label><input type="checkbox" name="interests" value="Business"> Business</label>
+            <label><input type="checkbox" name="interests" value="Education"> Education</label>
+            <label><input type="checkbox" name="interests" value="Mindfulness"> Mindfulness</label>
+            <label><input type="checkbox" name="interests" value="Politics"> Politics</label>
+            <label><input type="checkbox" name="interests" value="Finance"> Finance</label>
+            <label><input type="checkbox" name="interests" value="Cars"> Cars</label>
+            <label><input type="checkbox" name="interests" value="Design"> Design</label>
+            <label><input type="checkbox" name="interests" value="Comedy"> Comedy</label>
+            <label><input type="checkbox" name="interests" value="Volunteering"> Volunteering</label>
+            <label><input type="checkbox" name="interests" value="History"> History</label>
+            <label><input type="checkbox" name="interests" value="Geography"> Geography</label>
+            <label><input type="checkbox" name="interests" value="Language"> Language</label>
+            <label><input type="checkbox" name="interests" value="Nature"> Nature</label>
           </div>
         </div>
       </div>
@@ -357,21 +404,35 @@
       <!-- Search Bar -->
       <div class="search-container">
         <img src="{% static 'images/magnifying-glass.svg' %}" alt="Search" class="search-icon" />
-        <input type="text" class="search-input" placeholder="Search..." aria-label="Search" />
+        <input type="text" name="q" class="search-input" placeholder="Search..." aria-label="Search" />
       </div>
-    </div>
+      <button type="submit" class="search-submit">Search</button>
+    </form>
 
-    <!-- Right side of navigation -->
+    <!-- Right side of nav: About, Notifications, and Profile menu -->
     <div class="nav-right">
-      <form method="POST" action="{% url 'about-us' %}" style="margin: 0;">{% csrf_token %}
+      <!-- "About" as a separate form, POST to about-us -->
+      <form method="POST" action="{% url 'about-us' %}" style="margin: 0;">
+        {% csrf_token %}
         <button type="submit">About</button>
       </form>
-      <!-- User Profile Dropdown -->
+
+      <!-- Notification bell icon -->
+      <div class="notification-section" id="notificationSection">
+        <img 
+          src="{% static 'images/notification.svg' %}" 
+          alt="Notifications" 
+          class="notification-icon" 
+        />
+        <div class="notification-dropdown" id="notificationDropdown">
+          <p>No notifications yet</p>
+        </div>
+      </div>
+
+      <!-- Profile dropdown -->
       <div class="profile-menu" id="profileMenu">
         <img src="{% static 'images/default-profile-picture.jpg' %}" alt="Profile Picture" class="profile-pic" />
         <span>{{ registered_users.username }}</span> &#x25BC;
-
-        <!-- Dropdown menu with button routes -->
         <div class="dropdown-menu" id="dropdownMenu">
           <form method="POST" action="{% url 'my_profile' %}" style="margin: 0;">{% csrf_token %}
             <button type="submit">My Profile</button>
@@ -388,27 +449,25 @@
   </nav>
 
   <div class="main-content">
-
-    <!-- Hero Section with welcome message -->
+    <!-- Hero Section -->
     <div class="hero-section">
       <h1 class="hero-title">Welcome to University</h1>
       <p class="hero-subtitle">
         Starting university is an exciting yet overwhelming experience.
-        Uni Hub is here to make it easier! Designed for students, 
-        by students, Uni Hub is your digital gateway to everything happening on campus.
+        Uni Hub is here to make it easier!
       </p>
       <div class="hero-buttons">
         <button>Contact Us</button>
-        <form method="POST" action="{% url 'about-us' %}" style="margin: 0;">{% csrf_token %}
+        <form method="POST" action="{% url 'about-us' %}" style="margin: 0;">
+          {% csrf_token %}
           <button type="submit">About</button>
         </form>
       </div>
     </div>
 
-    <!-- Section with cards -->
+    <!-- Cards Section -->
     <div class="cards-container">
-
-      <!-- Card 1: Communities -->
+      <!-- Example Card 1 -->
       <div class="card">
         <img src="{% static 'images/stock-photo-1.png' %}" alt="Card One">
         <div class="card-content">
@@ -420,7 +479,7 @@
         </div>
       </div>
 
-      <!-- Card 2: Events -->
+      <!-- Example Card 2 -->
       <div class="card">
         <img src="{% static 'images/stock-photo-2.jpeg' %}" alt="Card Two">
         <div class="card-content">
@@ -442,40 +501,47 @@
 
     // Close all open dropdowns except the one passed as 'except'
     function closeAllDropdowns(except) {
-      const allDropdowns = document.querySelectorAll('.dropdown-content.show');
+      const allDropdowns = document.querySelectorAll('.dropdown-content.show, .notification-dropdown.show, .dropdown-menu.show');
       allDropdowns.forEach((dd) => {
         if (dd !== except) dd.classList.remove('show');
       });
     }
 
     document.addEventListener('DOMContentLoaded', function () {
-      // Profile menu and its dropdown
+      // Profile menu and dropdown
       const profileMenu = document.getElementById('profileMenu');
       const dropdownMenu = document.getElementById('dropdownMenu');
-
-      // Toggle profile dropdown on click, but ignore clicks on form elements
       profileMenu.addEventListener('click', function (e) {
+        // If the user clicked directly on a form inside the dropdown, don't toggle
         if (e.target.tagName.toLowerCase() === 'form' || e.target.closest('form')) return;
         closeAllDropdowns(dropdownMenu);
         dropdownMenu.classList.toggle('show');
         e.stopPropagation();
       });
 
-      // Type dropdown elements
-      const typeBtn = document.getElementById('typeBtn');
-      const typeDropdown = document.getElementById('typeDropdown');
-      const typeDropdownContent = document.getElementById('typeDropdownContent');
+      // Notification bell
+      const notificationSection = document.getElementById('notificationSection');
+      const notificationDropdown = document.getElementById('notificationDropdown');
+      notificationSection.addEventListener('click', function (e) {
+        closeAllDropdowns(notificationDropdown);
+        notificationDropdown.classList.toggle('show');
+        e.stopPropagation();
+      });
 
-      // Show or hide type dropdown on click
+      // Type dropdown
+      const typeBtn = document.getElementById('typeBtn');
+      const typeDropdownContent = document.getElementById('typeDropdownContent');
+      const typeInput = document.getElementById('typeInput');
       typeBtn.addEventListener('click', function (e) {
         closeAllDropdowns(typeDropdownContent);
         toggleDropdown(typeDropdownContent);
         e.stopPropagation();
       });
-
       typeDropdownContent.addEventListener('click', function (e) {
         if (e.target.tagName.toLowerCase() === 'button') {
+          // Update visible button text + hidden input
           typeBtn.textContent = e.target.textContent;
+          typeInput.value = e.target.textContent;
         }
       });
 
@@ -488,11 +554,20 @@
         e.stopPropagation();
       });
 
-      // Closes all dropdowns when clicking outside of them
+      // Click outside to close any open dropdown
       document.addEventListener('click', function (event) {
-        if (!profileMenu.contains(event.target)) dropdownMenu.classList.remove('show');
-        if (!typeDropdown.contains(event.target)) typeDropdownContent.classList.remove('show');
-        if (!interestsDropdown.contains(event.target)) interestsDropdownContent.classList.remove('show');
+        if (!profileMenu.contains(event.target)) {
+          dropdownMenu.classList.remove('show');
+        }
+        if (!notificationSection.contains(event.target)) {
+          notificationDropdown.classList.remove('show');
+        }
+        if (!typeDropdownContent.contains(event.target) && event.target !== typeBtn) {
+          typeDropdownContent.classList.remove('show');
+        }
+        if (!interestsDropdown.contains(event.target)) {
+          interestsDropdownContent.classList.remove('show');
+        }
       });
     });
   </script>

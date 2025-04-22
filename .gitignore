@@ -20,13 +20,13 @@ env/
 .env.*
 *.env
 
-# Ignore Django static/media files (optional, can be rebuilt)
+# Ignore Django static/media files
 staticfiles/
 
 # Allow tracking of empty folders (add .gitkeep inside ignored folders)
 !staticfiles/.gitkeep
 
-# Ignore SQLite database files (if using SQLite)
+# Ignore SQLite database files
 *.sqlite3
 db.sqlite3
 
@@ -35,5 +35,5 @@ db.sqlite3
 *.log
 docker-compose.override.yml
 
-# Ignore __MACOSX system files (if you're using macOS)
+# Ignore __MACOSX system files (if using macOS)
 .DS_Store
